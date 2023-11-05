@@ -20,4 +20,8 @@ function fetchSaveFilm(selectedSearchedFilmId, userId, status) {
   });
 }
 
-export {fetchGetSavedFilmsOfUser, fetchSaveFilm, fetchSearchFilms};
+function fetchGetUserInformations(id) {
+  return axios.get(`http://localhost:5133/api/Users/${id}`);
+}
+
+export {fetchGetSavedFilmsOfUser, fetchSaveFilm, fetchSearchFilms, fetchGetUserInformations};

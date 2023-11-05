@@ -9,6 +9,7 @@ import {MD2Colors} from 'react-native-paper';
 import SearchFilm from './screens/app/SearchFilm';
 import {View} from 'react-native';
 import FlashMessage from 'react-native-flash-message';
+import UserProfile from './screens/app/UserProfile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,9 @@ const tabBarIconOptions = route => {
       break;
     case 'SearchFilm':
       iconName = 'search';
+      break;
+    case 'UserProfile':
+      iconName = 'user';
       break;
     default:
       break;
@@ -40,6 +44,7 @@ function AppTabNavigatorRoutes() {
       })}>
       <Tab.Screen name="SearchFilm" component={SearchFilm} />
       <Tab.Screen name="SavedFilmList" component={SavedFilmList} />
+      <Tab.Screen name="UserProfile" component={UserProfile} />
     </Tab.Navigator>
   );
 }
