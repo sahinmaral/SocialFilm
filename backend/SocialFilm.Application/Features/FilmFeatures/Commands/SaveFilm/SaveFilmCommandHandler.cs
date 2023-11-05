@@ -26,8 +26,8 @@ public class SaveFilmCommandHandler : IRequestHandler<SaveFilmCommand, MessageRe
     {
         try
         {
-            var isUserExisted = await _authService.CheckIfUserExistsAsync(request.UserId);
-            if (!isUserExisted)
+            var existedUser = await _authService.GetUserByIdAsync(request.UserId);
+            if (existedUser is null)
                 throw new EntityNullException($"{request.UserId} ID içeren kullanıcı bulunamadı");
 
             var isFilmSavedAtDatabase = await _filmDetailService.AnyAsync(x => x.Id == request.FilmId, cancellationToken);

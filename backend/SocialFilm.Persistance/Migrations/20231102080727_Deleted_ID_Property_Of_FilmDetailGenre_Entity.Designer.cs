@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialFilm.Persistance.Context;
 
@@ -11,9 +12,11 @@ using SocialFilm.Persistance.Context;
 namespace SocialFilm.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231102080727_Deleted_ID_Property_Of_FilmDetailGenre_Entity")]
+    partial class Deleted_ID_Property_Of_FilmDetailGenre_Entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,9 +281,6 @@ namespace SocialFilm.Persistance.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -337,9 +337,6 @@ namespace SocialFilm.Persistance.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -355,24 +352,6 @@ namespace SocialFilm.Persistance.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("SocialFilm.Domain.Entities.UserFriend", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FriendId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "FriendId");
-
-                    b.HasIndex("FriendId");
-
-                    b.ToTable("UserFriends", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -467,25 +446,6 @@ namespace SocialFilm.Persistance.Migrations
                     b.Navigation("Film");
                 });
 
-            modelBuilder.Entity("SocialFilm.Domain.Entities.UserFriend", b =>
-                {
-                    b.HasOne("SocialFilm.Domain.Entities.User", "Friend")
-                        .WithMany()
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SocialFilm.Domain.Entities.User", "User")
-                        .WithMany("UserFriends")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Friend");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SocialFilm.Domain.Entities.Comment", b =>
                 {
                     b.Navigation("SubComments");
@@ -517,8 +477,6 @@ namespace SocialFilm.Persistance.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("SavedFilms");
-
-                    b.Navigation("UserFriends");
                 });
 #pragma warning restore 612, 618
         }

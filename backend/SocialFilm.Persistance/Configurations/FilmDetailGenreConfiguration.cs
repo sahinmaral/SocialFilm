@@ -23,3 +23,4 @@ public sealed class FilmDetailGenreConfiguration : IEntityTypeConfiguration<Film
             .HasForeignKey(fg => fg.GenreId);
     }
 }
+

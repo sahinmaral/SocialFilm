@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 namespace SocialFilm.Infrastructure.Repositories;
 
 public abstract class GenericRepository<TEntity, TContext> : IRepository<TEntity>
-where TEntity : BaseEntity, new()
+where TEntity : class,IEntity, new()
 where TContext : DbContext
 {
     private readonly TContext _context;

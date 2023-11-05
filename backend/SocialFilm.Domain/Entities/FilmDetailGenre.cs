@@ -1,8 +1,6 @@
-﻿using SocialFilm.Domain.Common;
-
-namespace SocialFilm.Domain.Entities
+﻿namespace SocialFilm.Domain.Entities
 {
-    public class FilmDetailGenre : BaseEntity
+    public class FilmDetailGenre 
     {
         public string FilmDetailId { get; set; } = null!;
         public string GenreId { get; set; } = null!;

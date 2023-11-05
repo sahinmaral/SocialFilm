@@ -7,19 +7,22 @@ using SocialFilm.Application.Features.PostFeatures.Commands.CreatePost;
 using SocialFilm.Domain.DTOs;
 using SocialFilm.Domain.Entities;
 
-namespace SocialFilm.Application.Mappings
-{
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<RegisterUserCommand, User>();
-            CreateMap<CreatePostCommand, Post>();
-            CreateMap<CreateCommentCommand, Comment>();
+namespace SocialFilm.Application.Mappings;
 
-            CreateMap<SaveFilmCommand, SavedFilm>();
-            CreateMap<SavedFilm, ReadSavedFilmDto>();
-            CreateMap<FilmDetail, ReadFilmDetailDTO>();
-        }
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<RegisterUserCommand, User>();
+        CreateMap<CreatePostCommand, Post>();
+        CreateMap<CreateCommentCommand, Comment>();
+
+        CreateMap<SaveFilmCommand, SavedFilm>();
+        CreateMap<SavedFilm, ReadSavedFilmDTO>();
+
+        CreateMap<Genre, ReadGenreDTO>();
+        CreateMap<FilmDetail, ReadFilmDetailDTO>()
+               .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.FilmDetailGenres.Select(x => x.Genre)));
+        CreateMap<User, ReadUserDTO>();
     }
 }

@@ -11,5 +11,5 @@ public interface ISavedFilmService
 {
     public Task AddOrUpdateFilmAtListOfSavedFilmOfUser(SaveFilmCommand request,CancellationToken cancellationToken);
     public IQueryable<SavedFilm> GetWhere(Expression<Func<SavedFilm,bool>> expression);
-    public Task<PaginationResult<ReadSavedFilmDto>> GetSavedFilmsByUserIdDetailedAsQueryableAsync(GetSavedFilmsOfUserCommand request);
+    public Task<PaginationResult<ReadSavedFilmDTO>> GetSavedFilmsByUserIdDetailedAsQueryableAsync(GetSavedFilmsOfUserCommand request);
 }

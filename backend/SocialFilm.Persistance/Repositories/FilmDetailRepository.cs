@@ -10,3 +10,4 @@ public sealed class FilmDetailRepository : GenericRepository<FilmDetail, AppDbCo
     {
     }
 }
+

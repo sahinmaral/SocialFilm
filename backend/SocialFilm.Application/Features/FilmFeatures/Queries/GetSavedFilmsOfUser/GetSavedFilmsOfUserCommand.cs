@@ -8,4 +8,4 @@ public sealed record GetSavedFilmsOfUserCommand(
     string UserId, 
     int PageNumber = 1,
     int PageSize = 10
-    ) : IRequest<PaginationResult<ReadSavedFilmDto>>;
+    ) : IRequest<PaginationResult<ReadSavedFilmDTO>>;

@@ -35,7 +35,7 @@ public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand
         var uploadTasks = request.Files.Select(file => _cloudinaryService.UploadImageAsync(file, cancellationToken));
         var uploadedImageResults = await Task.WhenAll(uploadTasks);
 
-        var uploadedImageUrls = uploadedImageResults.Select(ir => ir.PublicId).ToList();
+        var uploadedImageUrls = uploadedImageResults.Select(ir => $"{ir.FullyQualifiedPublicId}.{ir.Format}").ToList();
 
         Post newPost = _mapper.Map<Post>(request);
         uploadedImageUrls.ForEach((ir) =>

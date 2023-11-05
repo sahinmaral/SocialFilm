@@ -79,12 +79,14 @@ public sealed class SavedFilmService : ISavedFilmService
         return _savedFilmRepository.GetWhere(expression);
     }
 
-    public async Task<PaginationResult<ReadSavedFilmDto>> GetSavedFilmsByUserIdDetailedAsQueryableAsync(GetSavedFilmsOfUserCommand request)
+    public async Task<PaginationResult<ReadSavedFilmDTO>> GetSavedFilmsByUserIdDetailedAsQueryableAsync(GetSavedFilmsOfUserCommand request)
     {
         return await _savedFilmRepository
             .GetWhere(x => x.UserId == request.UserId)
             .Include(x => x.Film)
-            .Select(x => _mapper.Map<ReadSavedFilmDto>(x))
+                .ThenInclude(x => x.FilmDetailGenres)
+                    .ThenInclude(x => x.Genre)
+            .Select(x => _mapper.Map<ReadSavedFilmDTO>(x))
             .ToPagedListAsync(request.PageSize,request.PageNumber);
     }
 }

@@ -74,11 +74,11 @@ namespace SocialFilm.Persistance.Services
             return response;
         }
 
-        public async Task<bool> CheckIfUserExistsAsync(string id)
+        public async Task<User?> GetUserByIdAsync(string id)
         {
             User? user = await _userManager.FindByIdAsync(id);
 
-            return user != null;
+            return user;
         }
     }
 }

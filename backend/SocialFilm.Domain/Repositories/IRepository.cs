@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace SocialFilm.Domain.Repositories;
 
 public interface IRepository<TEntity>
-where TEntity : BaseEntity, new()
+where TEntity : class, IEntity, new()
 {
     bool Any(Expression<Func<TEntity, bool>> expression);
     Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);

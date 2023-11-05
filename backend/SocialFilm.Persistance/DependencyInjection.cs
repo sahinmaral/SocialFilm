@@ -10,6 +10,7 @@ using SocialFilm.Domain.Repositories;
 using SocialFilm.Infrastructure.Identity;
 using SocialFilm.Infrastructure.Repositories;
 using SocialFilm.Persistance.Context;
+using SocialFilm.Persistance.Repositories;
 using SocialFilm.Persistance.Services;
 
 namespace SocialFilm.Persistance;
@@ -25,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IFilmDetailRepository, FilmDetailRepository>();
         services.AddScoped<ISavedFilmRepository, SavedFilmRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IPostService, PostService>();
@@ -34,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IFilmDetailService, FilmDetailService>();
         services.AddScoped<ISavedFilmService, SavedFilmService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

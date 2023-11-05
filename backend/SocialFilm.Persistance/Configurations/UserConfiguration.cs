@@ -12,6 +12,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("Users");
         builder.HasKey(x => x.Id);
 
+
         builder
             .HasMany(u => u.SavedFilms)
             .WithOne()
@@ -34,3 +35,5 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
     }
 }
+
+
