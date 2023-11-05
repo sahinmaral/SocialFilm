@@ -1,4 +1,5 @@
-﻿using SocialFilm.Domain.Entities;
+﻿using SocialFilm.Domain.DTOs;
+using SocialFilm.Domain.Entities;
 
 namespace SocialFilm.Application.Services;
 
@@ -8,4 +9,5 @@ public interface IPostService
     void Delete(Post deletedPost);
     Task<Post?> GetByIdAsync(string postId, CancellationToken cancellationToken);
     Task<Post?> GetByIdDetailedAsync(string postId, CancellationToken cancellationToken);
+    Task<PaginationResult<ReadPostDTO>> GetAllByUserIdAsPaginatedAsync(string userId, int pageSize, int pageNumber);
 }

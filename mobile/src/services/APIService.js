@@ -24,4 +24,16 @@ function fetchGetUserInformations(id) {
   return axios.get(`http://localhost:5133/api/Users/${id}`);
 }
 
-export {fetchGetSavedFilmsOfUser, fetchSaveFilm, fetchSearchFilms, fetchGetUserInformations};
+function fetchPostsByUserId(userId, page) {
+  return axios.get(
+    `http://localhost:5133/api/Posts/getAllByUserId?UserId=${userId}&PageNumber=${page}`,
+  );
+}
+
+export {
+  fetchGetSavedFilmsOfUser,
+  fetchSaveFilm,
+  fetchSearchFilms,
+  fetchGetUserInformations,
+  fetchPostsByUserId,
+};

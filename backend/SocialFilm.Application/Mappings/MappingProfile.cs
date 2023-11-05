@@ -20,6 +20,9 @@ public class MappingProfile : Profile
         CreateMap<SaveFilmCommand, SavedFilm>();
         CreateMap<SavedFilm, ReadSavedFilmDTO>();
 
+        CreateMap<Post, ReadPostDTO>()
+            .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.PostPhotos));
+        CreateMap<PostPhoto, ReadPostPhotoDTO>();
         CreateMap<Genre, ReadGenreDTO>();
         CreateMap<FilmDetail, ReadFilmDetailDTO>()
                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.FilmDetailGenres.Select(x => x.Genre)));

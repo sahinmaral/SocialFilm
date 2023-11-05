@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Image, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {
   ActivityIndicator,
@@ -9,8 +9,13 @@ import {
   Text,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {fetchGetUserInformations} from '../../../services/APIService';
-import {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  fetchGetUserInformations,
+  fetchPostsByUserId,
+} from '../../../services/APIService';
+
+import PostThumbnail from '../../../components/PostThumbnail';
+import styles from './UserProfile.styles';
 
 function UserProfile() {
   const initialStates = {
@@ -19,20 +24,29 @@ function UserProfile() {
       error: null,
       data: null,
     },
-    allPosts: [],
+    pageNumberOfPosts: 1,
   };
 
   const {user} = useSelector(state => state.auth);
 
   const [fetchResult, setFetchResult] = useState(initialStates.fetchResult);
+  const [pageNumberOfPosts, setPageNumberOfPosts] = useState(
+    initialStates.pageNumberOfPosts,
+  );
 
-  const handleFetchGetUserInformations = () => {
-    fetchGetUserInformations(user.userId)
-      .then(response => {
+  useEffect(() => {
+    const getUserInfoPromise = fetchGetUserInformations(user.userId);
+    const getPostsPromise = fetchPostsByUserId(user.userId, pageNumberOfPosts);
+
+    Promise.all([getUserInfoPromise, getPostsPromise])
+      .then(([userInfoResponse, postsResponse]) => {
         setFetchResult({
           ...fetchResult,
           loading: false,
-          data: response.data,
+          data: {
+            userInformations: userInfoResponse.data,
+            posts: postsResponse.data,
+          },
         });
       })
       .catch(error => {
@@ -61,48 +75,6 @@ function UserProfile() {
           });
         }
       });
-  };
-
-  const divideAllPostsByThree = () => {
-    const items = [...Array(10).keys()];
-
-    const chunkSize = Math.ceil(items.length / 4);
-
-    const dividedArray = [];
-
-    for (let i = 0; i < items.length; i += chunkSize) {
-      const chunk = items.slice(i, i + chunkSize);
-      dividedArray.push(chunk);
-    }
-
-    return dividedArray;
-  };
-
-  const renderPostsAsGrid = useCallback(() => {
-    const dividedPosts = divideAllPostsByThree();
-
-    return dividedPosts.map((postsOfRow,index) => {
-      return (
-        <View style={{flexDirection: 'row', gap: 2}} key={index}>
-          {postsOfRow.map((post,index2) => {
-            return (
-              <View style={{flex: 1 / 3, height: 150}} key={index2}>
-                <Image
-                  source={{
-                    uri: 'https://res.cloudinary.com/sahinmaral/image/upload/v1699171684/profileImages/default.png',
-                  }}
-                  style={{height: '100%', width: '100%', resizeMode: 'contain'}}
-                />
-              </View>
-            );
-          })}
-        </View>
-      );
-    });
-  },[divideAllPostsByThree])
-
-  useEffect(() => {
-    handleFetchGetUserInformations();
   }, [user]);
 
   if (fetchResult.loading) {
@@ -119,87 +91,53 @@ function UserProfile() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.username.container}>
-        <Text variant="bodyLarge" style={styles.username.value}>
-          {fetchResult.data.userName}
-        </Text>
-      </View>
-      <View style={styles.statistics.container}>
-        <Avatar.Image
-          size={80}
-          source={{
-            uri: fetchResult.data.profilePhotoURL
-              ? `https://res.cloudinary.com/sahinmaral/${fetchResult.data.profilePhotoURL}`
-              : 'https://res.cloudinary.com/sahinmaral/image/upload/v1699171684/profileImages/default.png',
-          }}
-        />
-        <View style={styles.statistics.description.container}>
-          <View style={styles.statistics.row.container}>
-            <Text variant="bodyMedium" style={styles.statistics.row.values}>
-              25
-            </Text>
-            <Text variant="bodyMedium">Posts</Text>
-          </View>
-          <View style={styles.statistics.row.container}>
-            <Text variant="bodyMedium" style={styles.statistics.row.values}>
-              25
-            </Text>
-            <Text variant="bodyMedium">Watched Films</Text>
-          </View>
-          <View style={styles.statistics.row.container}>
-            <Text variant="bodyMedium" style={styles.statistics.row.values}>
-              25
-            </Text>
-            <Text variant="bodyMedium">Friends</Text>
+      <View style={styles.informations.container}>
+        <View style={styles.username.container}>
+          <Text variant="bodyLarge" style={styles.username.value}>
+            {fetchResult.data.userInformations.userName}
+          </Text>
+        </View>
+        <View style={styles.statistics.container}>
+          <Avatar.Image
+            size={80}
+            source={{
+              uri: fetchResult.data.userInformations.profilePhotoURL
+                ? `https://res.cloudinary.com/sahinmaral/${fetchResult.data.userInformations.profilePhotoURL}`
+                : 'https://res.cloudinary.com/sahinmaral/image/upload/v1699171684/profileImages/default.png',
+            }}
+          />
+          <View style={styles.statistics.description.container}>
+            <View style={styles.statistics.row.container}>
+              <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                25
+              </Text>
+              <Text variant="bodyMedium">Posts</Text>
+            </View>
+            <View style={styles.statistics.row.container}>
+              <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                25
+              </Text>
+              <Text variant="bodyMedium">Watched Films</Text>
+            </View>
+            <View style={styles.statistics.row.container}>
+              <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                25
+              </Text>
+              <Text variant="bodyMedium">Friends</Text>
+            </View>
           </View>
         </View>
       </View>
-      <ScrollView style={styles.posts.container}>
-        {renderPostsAsGrid().map(postOfRow => {
-          return postOfRow;
-        })}
-      </ScrollView>
+      <FlatList
+        style={styles.posts.container}
+        numColumns={3}
+        data={fetchResult.data.posts.datas}
+        renderItem={({item}) => {
+          return <PostThumbnail post={item} />;
+        }}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    backgroundColor: MD2Colors.white,
-    justifyContent: 'center',
-  },
-  loading: {flex: 1, justifyContent: 'center'},
-  username: {
-    container: {alignItems: 'center'},
-    value: {fontWeight: 'bold'},
-  },
-  statistics: {
-    container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-    },
-    thumbnail: {
-      height: 80,
-      width: 80,
-      borderRadius: 40,
-      borderWidth: 1,
-      borderColor: MD3Colors.secondary90,
-    },
-    description: {
-      container: {flexDirection: 'row', gap: 10},
-    },
-    row: {
-      container: {alignItems: 'center'},
-      values: {fontWeight: 'bold'},
-    },
-  },
-  posts: {
-    container: {
-      marginVertical: 10,
-    },
-  },
-});
 
 export default UserProfile;

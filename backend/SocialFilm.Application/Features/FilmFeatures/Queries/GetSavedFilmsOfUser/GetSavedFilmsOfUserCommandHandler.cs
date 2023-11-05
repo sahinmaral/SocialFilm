@@ -16,6 +16,6 @@ public sealed class GetSavedFilmsOfUserCommandHandler : IRequestHandler<GetSaved
 
     public async Task<PaginationResult<ReadSavedFilmDTO>> Handle(GetSavedFilmsOfUserCommand request, CancellationToken cancellationToken)
     {
-        return await _savedFilmService.GetSavedFilmsByUserIdDetailedAsQueryableAsync(request);
+        return await _savedFilmService.GetSavedFilmsByUserIdDetailedAsPaginatedAsync(request.UserId,request.PageSize,request.PageNumber);
     }
 }

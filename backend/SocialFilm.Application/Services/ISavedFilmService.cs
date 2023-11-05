@@ -1,5 +1,4 @@
 ﻿using SocialFilm.Application.Features.FilmFeatures.Commands;
-using SocialFilm.Application.Features.FilmFeatures.Queries.GetSavedFilmsOfUser;
 using SocialFilm.Domain.DTOs;
 using SocialFilm.Domain.Entities;
 
@@ -9,7 +8,7 @@ namespace SocialFilm.Application.Services;
 
 public interface ISavedFilmService
 {
-    public Task AddOrUpdateFilmAtListOfSavedFilmOfUser(SaveFilmCommand request,CancellationToken cancellationToken);
-    public IQueryable<SavedFilm> GetWhere(Expression<Func<SavedFilm,bool>> expression);
-    public Task<PaginationResult<ReadSavedFilmDTO>> GetSavedFilmsByUserIdDetailedAsQueryableAsync(GetSavedFilmsOfUserCommand request);
+    Task AddOrUpdateFilmAtListOfSavedFilmOfUser(SaveFilmCommand request,CancellationToken cancellationToken);
+    IQueryable<SavedFilm> GetWhere(Expression<Func<SavedFilm,bool>> expression);
+    Task<PaginationResult<ReadSavedFilmDTO>> GetSavedFilmsByUserIdDetailedAsPaginatedAsync(string userId, int pageSize, int pageNumber);
 }
