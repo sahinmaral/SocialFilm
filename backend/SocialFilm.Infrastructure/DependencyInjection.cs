@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialFilm.Application.ApiClients;
 using SocialFilm.Application.FileStorage;
 using SocialFilm.Infrastructure.ApiClients;
-using SocialFilm.Infrastructure.Authentication.OptionsSetup;
+using SocialFilm.Infrastructure.Authentication;
 using SocialFilm.Infrastructure.FileStorage;
 
 namespace SocialFilm.Infrastructure;
@@ -17,8 +17,8 @@ public static class DependencyInjection
         services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
         services.ConfigureOptions<CloudinaryOptionsSetup>();
-        services.ConfigureOptions<JWTOptionsSetup>();
-        services.ConfigureOptions<JWTBearerOptionsSetup>();
+        services.ConfigureOptions<JwtOptionsSetup>();
+        services.ConfigureOptions<JwtBearerOptionsSetup>();
         services.ConfigureOptions<AuthenticationOptionsSetup>();
 
         services.AddAuthentication().AddJwtBearer();

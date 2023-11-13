@@ -1,14 +1,15 @@
 ﻿using Refit;
 
 using SocialFilm.Application.ApiClients;
-using SocialFilm.Application.Features.FilmFeatures.Commands;
+using SocialFilm.Application.Features.FilmFeatures.Commands.SaveFilm;
+using SocialFilm.Application.Features.FilmFeatures.Queries.SearchFilm;
 using SocialFilm.Application.Models;
 
 namespace SocialFilm.Infrastructure.ApiClients;
 
 public class TMDBApiClient : ITMDBApiClient
 {
-    public async Task<SearchFilmResponseModel> SearchFilmsByQueryAsync(SearchFilmsQuery query)
+    public async Task<SearchFilmResponseModel> SearchFilmsByQueryAsync(SearchFilmQuery query)
     {
         //TODO: Buradan gelecek olan butun hatalarin handle edilmesi gerekiyor
         //TODO: Rate limite bazen yakalanabiliriz. Dokumantasyonu uzerinde 429 hatasi ile gelir.

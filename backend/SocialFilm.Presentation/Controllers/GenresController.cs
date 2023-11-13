@@ -2,7 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using SocialFilm.Application.Features.GenreFeatures.Queries.GetAllGenre;
+using SocialFilm.Application.Features.GenreFeatures.Queries.GetAllGenres;
+using SocialFilm.Domain.DTOs;
 using SocialFilm.Domain.Entities;
 using SocialFilm.Presentation.Common;
 
@@ -16,9 +17,9 @@ public sealed class GenresController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] GetAllGenreQuery request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllGenresQuery request, CancellationToken cancellationToken)
     {
-        List<Genre> genres = await _mediator.Send(request, cancellationToken);
+        List<ReadGenreDTO> genres = await _mediator.Send(request, cancellationToken);
         return Ok(genres);
     }
 }

@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using SocialFilm.Application.Features.RoleFeatures.Command;
+using SocialFilm.Application.Features.RoleFeatures.Command.CreateRole;
 using SocialFilm.Domain.DTOs;
 using SocialFilm.Presentation.Common;
 

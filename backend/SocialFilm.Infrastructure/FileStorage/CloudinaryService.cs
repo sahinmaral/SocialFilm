@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 using SocialFilm.Application.FileStorage;
-using SocialFilm.Infrastructure.Authentication;
 
 namespace SocialFilm.Infrastructure.FileStorage;
 
 public class CloudinaryService : ICloudinaryService
 {
     Cloudinary cloudinary;
-
     public CloudinaryService(IOptions<CloudinaryOptions> cloudinaryOptions)
     {
         CloudinaryOptions cloudinaryOptionsValue = cloudinaryOptions.Value;
@@ -26,7 +24,7 @@ public class CloudinaryService : ICloudinaryService
         cloudinary = new Cloudinary(account);
     }
 
-    public async Task<ImageUploadResult> UploadImageAsync(IFormFile file,CancellationToken cancellationToken)
+    public async Task<ImageUploadResult> UploadImageAsync(IFormFile file, CancellationToken cancellationToken)
     {
         var uploadParams = new ImageUploadParams
         {

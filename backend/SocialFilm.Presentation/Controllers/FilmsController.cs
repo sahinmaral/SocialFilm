@@ -2,8 +2,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using SocialFilm.Application.Features.FilmFeatures.Commands;
+using SocialFilm.Application.Features.FilmFeatures.Commands.SaveFilm;
 using SocialFilm.Application.Features.FilmFeatures.Queries.GetSavedFilmsOfUser;
+using SocialFilm.Application.Features.FilmFeatures.Queries.SearchFilm;
 using SocialFilm.Presentation.Common;
 
 namespace SocialFilm.Presentation.Controllers;
@@ -15,7 +16,7 @@ public sealed class FilmsController : BaseController
     }
 
     [HttpGet("searchFilms")]
-    public async Task<IActionResult> SearchFilmsAsync([FromQuery]SearchFilmsQuery request,CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchFilmsAsync([FromQuery]SearchFilmQuery request,CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request, cancellationToken);
         return Ok(result);
@@ -29,9 +30,9 @@ public sealed class FilmsController : BaseController
     }
 
     [HttpGet("getSavedFilmsOfUser")]
-    public async Task<IActionResult> GetSavedFilmsOfUser([FromQuery] GetSavedFilmsOfUserCommand request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetSavedFilmsOfUserAsync([FromQuery] GetSavedFilmsOfUser request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(request,cancellationToken);
         return Ok(result);
     }
 

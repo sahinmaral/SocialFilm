@@ -22,7 +22,7 @@ public sealed class AuthController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(LoginCommand request, CancellationToken cancellationToken)
     {
         LoginCommandResponse response = await _mediator.Send(request, cancellationToken);
         return Ok(response);

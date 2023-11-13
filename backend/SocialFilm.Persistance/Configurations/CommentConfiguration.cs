@@ -15,6 +15,11 @@ public sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasMany(c => c.SubComments)
             .WithOne(c => c.PreviousComment)
             .HasForeignKey(c => c.PreviousCommentId);
+
+        builder.HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
   
     }
 }

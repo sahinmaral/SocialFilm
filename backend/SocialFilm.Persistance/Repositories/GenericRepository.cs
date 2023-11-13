@@ -110,4 +110,13 @@ where TContext : DbContext
         Entity.UpdateRange(entities);
     }
 
+    public async Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        return await Entity.Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public TEntity? GetByExpression(string id)
+    {
+        return Entity.Where(x => x.Id == id).AsNoTracking().FirstOrDefault();
+    }
 }

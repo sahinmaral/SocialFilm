@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialFilm.Persistance.Context;
 
@@ -11,9 +12,11 @@ using SocialFilm.Persistance.Context;
 namespace SocialFilm.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231109174700_Updated_Relationship_Between_User_And_Comment_By_Add_Navigation_Property_At_Comment")]
+    partial class Updated_Relationship_Between_User_And_Comment_By_Add_Navigation_Property_At_Comment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

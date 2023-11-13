@@ -12,11 +12,11 @@ where TEntity : class, IEntity, new()
     IQueryable<TEntity> GetAll();
     IQueryable<TEntity> GetWhere(Expression<Func<TEntity, bool>> expression);
     Task<TEntity?> GetByExpressionAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);
-    Task<TEntity?> GetFirstAsync(CancellationToken cancellationToken = default);
-
     TEntity? GetByExpression(Expression<Func<TEntity, bool>> expression);
+    Task<TEntity?> GetFirstAsync(CancellationToken cancellationToken = default);
     TEntity? GetFirst();
-
+    Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
+    TEntity? GetByExpression(string id);
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     void Add(TEntity entity);
     void AddRange(ICollection<TEntity> entities);

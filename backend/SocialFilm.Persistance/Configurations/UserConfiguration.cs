@@ -24,15 +24,6 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne()
             .HasForeignKey(p => p.UserId)
             .IsRequired();
-
-        
-        //TODO: NoAction DeleteBehaviour ekleme sebebi , migration sirasinda hata vermesinden dolayidir. Ileride probleme yol acabilir.
-        builder
-            .HasMany(u => u.Comments)
-            .WithOne()
-            .OnDelete(DeleteBehavior.NoAction)
-            .HasForeignKey(p => p.UserId)
-            .IsRequired();
     }
 }
 

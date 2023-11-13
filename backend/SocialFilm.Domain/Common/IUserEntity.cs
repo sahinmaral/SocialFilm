@@ -14,6 +14,6 @@ public interface IUserEntity : IEntity
 
     List<SavedFilm> SavedFilms { get; set; }
     List<Post> Posts { get; set; }
-    List<Comment> Comments { get; set; }
+    //List<Comment> Comments { get; set; }
     List<UserFriend> UserFriends { get; set; }
 }
