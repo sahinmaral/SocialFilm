@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using SocialFilm.Application.Features.CommentFeatures.Commands.CreateComment;
 using SocialFilm.Application.Features.CommentFeatures.Commands.DeleteComment;
+using SocialFilm.Application.Features.CommentFeatures.Queries.GetAllByParentCommentId;
 using SocialFilm.Application.Features.CommentFeatures.Queries.GetAllByPostId;
 using SocialFilm.Presentation.Common;
 
@@ -19,6 +20,14 @@ public sealed class CommentsController : BaseController
     [HttpGet("getAllByPostId")]
     public async Task<IActionResult> GetAllByPostIdAsync([FromQuery] GetAllByPostIdCommand request,
         CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("getAllByParentCommentId")]
+    public async Task<IActionResult> GetAllByParentCommentIAsync([FromQuery] GetAllByParentCommentIdCommand request,
+    CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request, cancellationToken);
         return Ok(result);

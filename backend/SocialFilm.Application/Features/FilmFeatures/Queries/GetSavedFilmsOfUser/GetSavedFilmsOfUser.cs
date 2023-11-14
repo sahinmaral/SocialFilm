@@ -8,16 +8,16 @@ using SocialFilm.Domain.DTOs;
 using SocialFilm.Domain.Entities;
 using SocialFilm.Domain.Repositories;
 using SocialFilm.Domain.RequestFeatures;
+using SocialFilm.Domain.Extensions;
 
 namespace SocialFilm.Application.Features.FilmFeatures.Queries.GetSavedFilmsOfUser;
 
-public sealed record GetSavedFilmsOfUser(
+public sealed record GetSavedFilmsOfUserCommand(
     string UserId,
-    int PageNumber = 1,
-    int PageSize = 10
+    SavedFilmParameters? Parameters = null
     ) : IRequest<PaginationResult<ReadSavedFilmDTO>>;
 
-public sealed class GetSavedFilmsOfUserCommandHandler : IRequestHandler<GetSavedFilmsOfUser, PaginationResult<ReadSavedFilmDTO>>
+public sealed class GetSavedFilmsOfUserCommandHandler : IRequestHandler<GetSavedFilmsOfUserCommand, PaginationResult<ReadSavedFilmDTO>>
 {
     private readonly ISavedFilmRepository _savedFilmRepository;
     private readonly IMapper _mapper;
@@ -27,24 +27,39 @@ public sealed class GetSavedFilmsOfUserCommandHandler : IRequestHandler<GetSaved
         _savedFilmRepository = savedFilmRepository;
     }
 
-    public Task<PaginationResult<ReadSavedFilmDTO>> Handle(GetSavedFilmsOfUser request, CancellationToken cancellationToken)
+    public Task<PaginationResult<ReadSavedFilmDTO>> Handle(GetSavedFilmsOfUserCommand request, CancellationToken cancellationToken)
     {
+        if (request.Parameters == null)
+        {
+            request = new GetSavedFilmsOfUserCommand(UserId: request.UserId)
+            {
+                Parameters = new SavedFilmParameters() 
+            };
+        }
+
         var includedSavedFilms = _savedFilmRepository
                         .GetWhere(x => x.UserId == request.UserId)
                             .Include(x => x.Film)
-                                .ThenInclude(x => x.FilmDetailGenres)
-                                    .ThenInclude(x => x.Genre);
+                                 .ThenInclude(x => x.FilmDetailGenres)
+                                    .ThenInclude(x => x.Genre)
+                                        .AsQueryable()
+                                        .FilterByStatus(request.Parameters.Status)
+                                        .SearchByFilmName(request.Parameters.SearchTerm);
+
 
         var sortedIncludedSavedFilms = includedSavedFilms
-            .OrderBy(x => x.CreatedAt);
+            .OrderBy(x => x.Film.Name)
+                .ThenByDescending(x => x.CreatedAt);
 
         var pagedSortedIncludedSavedFilms = PagedList<SavedFilm>
-            .ToPagedList(sortedIncludedSavedFilms, request.PageNumber, request.PageSize);
+            .ToPagedList(sortedIncludedSavedFilms, 
+                            request.Parameters.PaginationParameters.CurrentPage, 
+                            request.Parameters.PaginationParameters.PageSize
+            );
 
-        var mappedSavedFilms = _mapper.Map<IEnumerable<ReadSavedFilmDTO>>(pagedSortedIncludedSavedFilms);
-        var listedSavedFilms = mappedSavedFilms.ToList();
+        var mappedSavedFilms = _mapper.Map<List<ReadSavedFilmDTO>>(pagedSortedIncludedSavedFilms);
 
-        var result = new PaginationResult<ReadSavedFilmDTO>(Data: listedSavedFilms, MetaData: pagedSortedIncludedSavedFilms.MetaData);
+        var result = new PaginationResult<ReadSavedFilmDTO>(Data: mappedSavedFilms, MetaData: pagedSortedIncludedSavedFilms.MetaData);
 
         return Task.FromResult(result);
     }

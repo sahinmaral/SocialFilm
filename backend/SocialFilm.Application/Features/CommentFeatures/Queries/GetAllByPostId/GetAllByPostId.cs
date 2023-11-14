@@ -38,7 +38,7 @@ public class GetAllByPostIdCommandHandler : IRequestHandler<GetAllByPostIdComman
             .GetAll()
             .Where(x => x.PostId == request.PostId && x.PreviousCommentId == null)
             .Include(x => x.User)
-            .OrderBy(x => x.CreatedAt);
+            .OrderByDescending(x => x.CreatedAt);
 
         var pagedMainComments = PagedList<Comment>.ToPagedList(mainCommentsQuery, request.PageNumber, request.ParentPageSize);
 
@@ -49,7 +49,7 @@ public class GetAllByPostIdCommandHandler : IRequestHandler<GetAllByPostIdComman
             var subCommentsQuery = _repositoryManager.CommentRepository
                 .GetWhere(sc => sc.PreviousCommentId == mainComment.Id)
                 .Include(x => x.User)
-                .OrderBy(x => x.CreatedAt);
+                .OrderByDescending(x => x.CreatedAt);
 
             var pagedSubComments = PagedList<Comment>.ToPagedList(subCommentsQuery, 1, request.ChildPageSize);
 

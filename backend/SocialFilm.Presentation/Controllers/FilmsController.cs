@@ -30,7 +30,7 @@ public sealed class FilmsController : BaseController
     }
 
     [HttpGet("getSavedFilmsOfUser")]
-    public async Task<IActionResult> GetSavedFilmsOfUserAsync([FromQuery] GetSavedFilmsOfUser request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetSavedFilmsOfUserAsync([FromQuery] GetSavedFilmsOfUserCommand request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request,cancellationToken);
         return Ok(result);

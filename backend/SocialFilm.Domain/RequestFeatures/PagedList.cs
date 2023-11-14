@@ -5,13 +5,18 @@ public class PagedList<T> : List<T>
     public MetaData MetaData { get; set; }
     public PagedList(List<T> items, int count, int pageNumber, int pageSize)
     {
+        int totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
         MetaData = new MetaData()
         {
-            TotalCount = count,
+            TotalRecords = count,
             PageSize = pageSize,
             CurrentPage = pageNumber,
-            TotalPage = (int)Math.Ceiling(count / (double)pageSize)
+            IsFirstPage = pageNumber == 1,
+            IsLastPage = pageNumber == totalPages,
+            TotalPages = totalPages
         };
+
         AddRange(items);
     }
 

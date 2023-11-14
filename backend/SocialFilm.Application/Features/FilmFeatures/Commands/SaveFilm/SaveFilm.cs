@@ -9,6 +9,8 @@ using SocialFilm.Domain.Entities;
 using SocialFilm.Domain.Enums;
 using SocialFilm.Domain.Exceptions;
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace SocialFilm.Application.Features.FilmFeatures.Commands.SaveFilm;
 
 public sealed record SaveFilmCommand(string FilmId, string UserId, SavedFilmStatus Status) : IRequest<MessageResponse>;
@@ -39,14 +41,15 @@ public sealed class SaveFilmCommandHandler : IRequestHandler<SaveFilmCommand, Me
                 .GetByIdAsync(request.UserId,cancellationToken) 
                 ?? throw new EntityNullException($"{request.UserId} ID içeren kullanıcı bulunamadı");
 
+            if (await CheckIfUserSavedMaximumThreeFilmsToday(request.UserId, cancellationToken))
+                throw new InvalidOperationException("Mental sagliginiz acisindan gunde uc tane film izleyebilirsiniz. Bunun yerine dinlenebilirsiniz veya seçtiğiniz filmi izlenmemiş olarak kaydedebilirsiniz.");
+
             var isFilmSavedAtDatabase = await _repositoryManager
                 .FilmDetailRepository
                 .AnyAsync(x => x.Id == request.FilmId, cancellationToken);
 
             if (isFilmSavedAtDatabase)
             {
-                if (await CheckIfUserSavedMaximumThreeFilmsToday(request.UserId, cancellationToken))
-                    throw new InvalidOperationException("Mental sagliginiz acisindan gunde uc tane film izleyebilirsiniz. Bunun yerine dinlenebilirsiniz veya seçtiğiniz filmi izlenmemiş olarak kaydedebilirsiniz.");
 
                 var filmDetail = await _repositoryManager
                     .FilmDetailRepository
@@ -105,7 +108,19 @@ public sealed class SaveFilmCommandHandler : IRequestHandler<SaveFilmCommand, Me
                     FilmDetailGenres = filmDetailGenres
                 };
 
+                SavedFilm newEntity = new SavedFilm()
+                {
+                    FilmId = filmDetail.Id,
+                    Status = request.Status,
+                    UserId = request.UserId
+                };
+
+                filmDetail.SavedFilms.Add(newEntity);
+
                 await _repositoryManager.FilmDetailRepository.AddAsync(filmDetail, cancellationToken);
+
+                await _repositoryManager.SaveChangesAsync(cancellationToken);
+
             }
 
             await _repositoryManager.SaveChangesAsync(cancellationToken);
