@@ -1,7 +1,6 @@
 import {useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
-import {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, Image, View, TouchableOpacity} from 'react-native';
+import {useCallback, useState} from 'react';
+import {Image, View, TouchableOpacity} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {
   Text,
@@ -11,7 +10,6 @@ import {
   Portal,
   Modal,
   Avatar,
-  Icon,
   MD2Colors,
   ActivityIndicator,
 } from 'react-native-paper';
@@ -142,7 +140,6 @@ function SavedFilmList() {
   };
 
   const handleFetchSaveFilm = status => {
-
     fetchSaveFilm({
       filmId: modalState.selectedSavedFilm.film.id.toString(),
       userId: user.userId,
@@ -159,7 +156,7 @@ function SavedFilmList() {
         handleFetchSaveFilm();
       })
       .catch(error => {
-        clearModalState()
+        clearModalState();
 
         if (error.response && error.response.status === 400) {
           const {message} = error.response.data;
@@ -196,9 +193,6 @@ function SavedFilmList() {
 
   return (
     <View style={styles.container}>
-      <Text variant="titleLarge" style={styles.header}>
-        Saved Films
-      </Text>
 
       <Portal>
         <Modal
@@ -225,7 +219,7 @@ function SavedFilmList() {
             <DataTable.Title numeric>Status</DataTable.Title>
             <DataTable.Title numeric>Details</DataTable.Title>
           </DataTable.Header>
-          {fetchResult.data.datas.map(savedFilm => {
+          {fetchResult.data.data.map(savedFilm => {
             return (
               <DataTable.Row key={savedFilm.id}>
                 <DataTable.Cell>
@@ -262,13 +256,14 @@ function SavedFilmList() {
             );
           })}
 
-          <DataTable.Pagination
-            page={fetchResult.data.pageNumber}
-            numberOfPages={fetchResult.data.totalPages}
-            onPageChange={page => handleFetchSavedFilmsOfUser(page)}
-            label={`${fetchResult.data.pageNumber} of ${fetchResult.data.totalPages}`}
-            showFastPaginationControls
-          />
+          {<DataTable.Pagination
+              page={fetchResult.data.metaData.currentPage}
+              numberOfPages={fetchResult.data.metaData.totalPages+1}
+              onPageChange={page => handleFetchSavedFilmsOfUser(page)}
+              label={`${fetchResult.data.metaData.currentPage} of ${fetchResult.data.metaData.totalPages}`}
+              showFastPaginationControls
+            />
+          }
         </DataTable>
       )}
     </View>

@@ -17,7 +17,7 @@ import {
 import PostThumbnail from '../../../components/PostThumbnail';
 import styles from './UserProfile.styles';
 
-function UserProfile() {
+function UserProfile({navigation}) {
   const initialStates = {
     fetchResult: {
       loading: true,
@@ -131,9 +131,9 @@ function UserProfile() {
       <FlatList
         style={styles.posts.container}
         numColumns={3}
-        data={fetchResult.data.posts.datas}
+        data={fetchResult.data.posts.data}
         renderItem={({item}) => {
-          return <PostThumbnail post={item} />;
+          return <PostThumbnail post={item} navigation={navigation} />;
         }}
       />
     </View>

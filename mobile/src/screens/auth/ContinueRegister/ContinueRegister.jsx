@@ -7,7 +7,6 @@ import {
   TextInput,
   Button,
   ProgressBar,
-  MD3Colors,
 } from 'react-native-paper';
 import styles from './ContinueRegister.styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
