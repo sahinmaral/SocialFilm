@@ -4,6 +4,7 @@ using SocialFilm.Application.Features.AuthFeatures.Commands.Register;
 using SocialFilm.Application.Features.CommentFeatures.Commands.CreateComment;
 using SocialFilm.Application.Features.FilmFeatures.Commands.SaveFilm;
 using SocialFilm.Application.Features.PostFeatures.Commands.CreatePost;
+using SocialFilm.Application.Models;
 using SocialFilm.Domain.DTOs;
 using SocialFilm.Domain.Entities;
 
@@ -33,5 +34,12 @@ public class MappingProfile : Profile
         CreateMap<FilmDetail, ReadFilmDetailDTO>()
                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.FilmDetailGenres.Select(x => x.Genre)));
         CreateMap<User, ReadUserDTO>();
+
+        CreateMap<FilmBaseResponseModel, ReadFilmDetailDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.PosterPath, opt => opt.MapFrom(src => src.Poster_path))
+            .ForMember(dest => dest.BackdropPath, opt => opt.MapFrom(src => src.Backdrop_path))
+            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.Release_Date));
     }
 }

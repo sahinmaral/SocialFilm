@@ -18,9 +18,29 @@ function fetchGetSavedFilmsOfUser(userId, page, size, status, filmName) {
   return axios.get(url);
 }
 
+function fetchGetUserFriendsById(userId, page, size, userName) {
+  let url = `http://localhost:5133/api/Users/getUserFriendsById?UserId=${userId}&Parameters.PaginationParameters.CurrentPage=${page}`;
+
+  if (size !== null && size !== undefined) {
+    url = url.concat(`&Parameters.PaginationParameters.PageSize=${size}`);
+  }
+
+  if (userName && userName.length !== 0) {
+    url = url.concat(`&Parameters.SearchTerm=${userName}`);
+  }
+
+  return axios.get(url);
+}
+
 function fetchSearchFilms(searchedFilmTitle, page) {
   return axios.get(
     `http://localhost:5133/api/Films/searchFilms?Name=${searchedFilmTitle}&Page=${page}`,
+  );
+}
+
+function fetchGetUserProfileStatistics(userId) {
+  return axios.get(
+    `http://localhost:5133/api/Users/getUserProfileStatistic/${userId}`,
   );
 }
 
@@ -39,6 +59,16 @@ function fetchGetUserInformations(id) {
 function fetchPostsByUserId(userId, page) {
   return axios.get(
     `http://localhost:5133/api/Posts/getAllByUserId?UserId=${userId}&PageNumber=${page}`,
+  );
+}
+
+function fetchGetOtherUserPosts(userId,otherUserId, page) {
+
+  const url = `http://localhost:5133/api/Posts/getOtherUserPosts?UserId=${userId}&OtherUserId=${otherUserId}&PageNumber=${page}`;
+  console.log(url);
+
+  return axios.get(
+    `http://localhost:5133/api/Posts/getOtherUserPosts?UserId=${userId}&OtherUserId=${otherUserId}&PageNumber=${page}`,
   );
 }
 
@@ -66,10 +96,21 @@ function fetchGetSubCommentsByParentCommentId(parentCommentId, pageNumber = 1) {
   );
 }
 
+function fetchLogin(username, password) {
+  return axios.post('http://localhost:5133/api/Auth/login', {
+    userName: username,
+    password: password,
+  });
+}
+
 export {
+  fetchLogin,
+  fetchGetUserProfileStatistics,
+  fetchGetUserFriendsById,
   fetchGetSubCommentsByParentCommentId,
   fetchGetCommentsPostById,
   fetchGetPostById,
+  fetchGetOtherUserPosts,
   fetchCreatePost,
   fetchGetSavedFilmsOfUser,
   fetchSaveFilm,

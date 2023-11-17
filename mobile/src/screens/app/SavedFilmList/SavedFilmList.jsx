@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {useCallback, useState} from 'react';
+import {useCallback, useState, useEffect} from 'react';
 import {Image, View, TouchableOpacity} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {
@@ -21,8 +21,11 @@ import {
   fetchSaveFilm,
 } from '../../../services/APIService';
 
-function SavedFilmList() {
+function SavedFilmList({route}) {
   const {user} = useSelector(state => state.auth);
+
+  const [userIdToSeeSavedFilmList, setUserIdToSeeSavedFilmList] =
+    useState(null);
 
   const initialStates = {
     modalState: {
@@ -122,7 +125,7 @@ function SavedFilmList() {
   };
 
   const handleFetchSavedFilmsOfUser = (page = 1) => {
-    fetchGetSavedFilmsOfUser(user.userId, page)
+    fetchGetSavedFilmsOfUser(userIdToSeeSavedFilmList, page)
       .then(result => {
         setFetchResult({
           ...fetchResult,
@@ -188,12 +191,32 @@ function SavedFilmList() {
   useFocusEffect(
     useCallback(() => {
       handleFetchSavedFilmsOfUser();
-    }, []),
+    }, [userIdToSeeSavedFilmList]),
   );
+
+  useEffect(() => {
+    const userIdExists = route.params && route.params.userId;
+    if (userIdExists) {
+      setUserIdToSeeSavedFilmList(userIdExists);
+    } else {
+      setUserIdToSeeSavedFilmList(user.userId);
+    }
+  }, []);
+
+  if (fetchResult.loading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator
+          animating={true}
+          size={40}
+          color={MD2Colors.red800}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-
       <Portal>
         <Modal
           visible={modalState.visible}
@@ -203,69 +226,57 @@ function SavedFilmList() {
         </Modal>
       </Portal>
 
-      {fetchResult.loading && (
-        <View style={styles.loading}>
-          <ActivityIndicator
-            animating={true}
-            size={40}
-            color={MD2Colors.red800}
-          />
-        </View>
-      )}
-      {!fetchResult.loading && (
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>Name</DataTable.Title>
-            <DataTable.Title numeric>Status</DataTable.Title>
-            <DataTable.Title numeric>Details</DataTable.Title>
-          </DataTable.Header>
-          {fetchResult.data.data.map(savedFilm => {
-            return (
-              <DataTable.Row key={savedFilm.id}>
-                <DataTable.Cell>
-                  <Text variant="bodyMedium">{savedFilm.film.name}</Text>
-                </DataTable.Cell>
-                <DataTable.Cell style={styles.table.status.container}>
-                  <Badge
-                    style={styles.table.status.badge(
-                      savedFilm.status === SavedFilmStatus.Watched
-                        ? 'green'
-                        : 'darkred',
-                    )}>
-                    <Text variant="bodyMedium" style={styles.table.status.text}>
-                      {savedFilm.status === SavedFilmStatus.Watched
-                        ? 'Watched'
-                        : 'Not Watched'}
-                    </Text>
-                  </Badge>
-                </DataTable.Cell>
-                <DataTable.Cell numeric>
-                  <IconButton
-                    icon="magnify"
-                    iconColor={MD2Colors.black}
-                    size={20}
-                    onPress={() => {
-                      setModalState({
-                        selectedSavedFilm: savedFilm,
-                        visible: !modalState.visible,
-                      });
-                    }}
-                  />
-                </DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
+      <DataTable>
+        <DataTable.Header>
+          <DataTable.Title>Name</DataTable.Title>
+          <DataTable.Title numeric>Status</DataTable.Title>
+          <DataTable.Title numeric>Details</DataTable.Title>
+        </DataTable.Header>
+        {fetchResult.data.data.map(savedFilm => {
+          return (
+            <DataTable.Row key={savedFilm.id}>
+              <DataTable.Cell>
+                <Text variant="bodyMedium">{savedFilm.film.name}</Text>
+              </DataTable.Cell>
+              <DataTable.Cell style={styles.table.status.container}>
+                <Badge
+                  style={styles.table.status.badge(
+                    savedFilm.status === SavedFilmStatus.Watched
+                      ? 'green'
+                      : 'darkred',
+                  )}>
+                  <Text variant="bodyMedium" style={styles.table.status.text}>
+                    {savedFilm.status === SavedFilmStatus.Watched
+                      ? 'Watched'
+                      : 'Not Watched'}
+                  </Text>
+                </Badge>
+              </DataTable.Cell>
+              <DataTable.Cell numeric>
+                <IconButton
+                  icon="magnify"
+                  iconColor={MD2Colors.black}
+                  size={20}
+                  onPress={() => {
+                    setModalState({
+                      selectedSavedFilm: savedFilm,
+                      visible: !modalState.visible,
+                    });
+                  }}
+                />
+              </DataTable.Cell>
+            </DataTable.Row>
+          );
+        })}
 
-          {<DataTable.Pagination
-              page={fetchResult.data.metaData.currentPage}
-              numberOfPages={fetchResult.data.metaData.totalPages+1}
-              onPageChange={page => handleFetchSavedFilmsOfUser(page)}
-              label={`${fetchResult.data.metaData.currentPage} of ${fetchResult.data.metaData.totalPages}`}
-              showFastPaginationControls
-            />
-          }
-        </DataTable>
-      )}
+        <DataTable.Pagination
+          page={fetchResult.data.metaData.currentPage}
+          numberOfPages={fetchResult.data.metaData.totalPages + 1}
+          onPageChange={page => handleFetchSavedFilmsOfUser(page)}
+          label={`${fetchResult.data.metaData.currentPage} of ${fetchResult.data.metaData.totalPages}`}
+          showFastPaginationControls
+        />
+      </DataTable>
     </View>
   );
 }

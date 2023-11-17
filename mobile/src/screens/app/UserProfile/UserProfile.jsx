@@ -1,54 +1,74 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import {
-  ActivityIndicator,
-  Avatar,
-  MD2Colors,
-  MD3Colors,
-  Text,
-} from 'react-native-paper';
+import {ActivityIndicator, Avatar, MD2Colors, Text} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {
+  fetchGetOtherUserPosts,
   fetchGetUserInformations,
+  fetchGetUserProfileStatistics,
   fetchPostsByUserId,
 } from '../../../services/APIService';
 
 import PostThumbnail from '../../../components/PostThumbnail';
 import styles from './UserProfile.styles';
+import {TouchableOpacity} from 'react-native';
 
-function UserProfile({navigation}) {
+function UserProfile({navigation, route}) {
   const initialStates = {
     fetchResult: {
       loading: true,
       error: null,
       data: null,
     },
-    pageNumberOfPosts: 1,
   };
 
   const {user} = useSelector(state => state.auth);
 
-  const [fetchResult, setFetchResult] = useState(initialStates.fetchResult);
-  const [pageNumberOfPosts, setPageNumberOfPosts] = useState(
-    initialStates.pageNumberOfPosts,
+  const [userId] = useState(
+    route.params && route.params.userId ? route.params.userId : user.userId,
   );
 
-  useEffect(() => {
-    const getUserInfoPromise = fetchGetUserInformations(user.userId);
-    const getPostsPromise = fetchPostsByUserId(user.userId, pageNumberOfPosts);
+  const [fetchResult, setFetchResult] = useState(initialStates.fetchResult);
 
-    Promise.all([getUserInfoPromise, getPostsPromise])
-      .then(([userInfoResponse, postsResponse]) => {
-        setFetchResult({
-          ...fetchResult,
-          loading: false,
-          data: {
-            userInformations: userInfoResponse.data,
-            posts: postsResponse.data,
-          },
-        });
-      })
+  useEffect(() => {
+    const getUserInfoPromise = fetchGetUserInformations(userId);
+    const getPostsPromise =
+      userId === user.userId
+        ? fetchPostsByUserId(
+            userId,
+            !fetchResult.data || !fetchResult.data.postsResponse
+              ? 1
+              : fetchResult.data.postsResponse.metaData.currentPage + 1,
+          )
+        : fetchGetOtherUserPosts(
+            user.userId,
+            userId,
+            !fetchResult.data || !fetchResult.data.postsResponse
+              ? 1
+              : fetchResult.data.postsResponse.metaData.currentPage + 1,
+          );
+    const getUserProfileStatisticsPromise =
+      fetchGetUserProfileStatistics(userId);
+
+    Promise.all([
+      getUserInfoPromise,
+      getPostsPromise,
+      getUserProfileStatisticsPromise,
+    ])
+      .then(
+        ([userInfoResponse, postsResponse, userProfileStatisticsResponse]) => {
+          setFetchResult({
+            ...fetchResult,
+            loading: false,
+            data: {
+              userInformations: userInfoResponse.data,
+              posts: postsResponse.data,
+              userProfileStatistics: userProfileStatisticsResponse.data,
+            },
+          });
+        },
+      )
       .catch(error => {
         if (error.response && error.response.status === 400) {
           const {message} = error.response.data;
@@ -75,7 +95,7 @@ function UserProfile({navigation}) {
           });
         }
       });
-  }, [user]);
+  }, [userId]);
 
   if (fetchResult.loading) {
     return (
@@ -109,22 +129,32 @@ function UserProfile({navigation}) {
           <View style={styles.statistics.description.container}>
             <View style={styles.statistics.row.container}>
               <Text variant="bodyMedium" style={styles.statistics.row.values}>
-                25
+                {fetchResult.data.userProfileStatistics.postCount}
               </Text>
               <Text variant="bodyMedium">Posts</Text>
             </View>
-            <View style={styles.statistics.row.container}>
-              <Text variant="bodyMedium" style={styles.statistics.row.values}>
-                25
-              </Text>
-              <Text variant="bodyMedium">Watched Films</Text>
-            </View>
-            <View style={styles.statistics.row.container}>
-              <Text variant="bodyMedium" style={styles.statistics.row.values}>
-                25
-              </Text>
-              <Text variant="bodyMedium">Friends</Text>
-            </View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('SavedFilmList', {userId: user.userId})
+              }>
+              <View style={styles.statistics.row.container}>
+                <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                  {fetchResult.data.userProfileStatistics.watchedFilmCount}
+                </Text>
+                <Text variant="bodyMedium">Watched Films</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('UserProfileFriends', {userId: user.userId})
+              }>
+              <View style={styles.statistics.row.container}>
+                <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                  {fetchResult.data.userProfileStatistics.friendCount}
+                </Text>
+                <Text variant="bodyMedium">Friends</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

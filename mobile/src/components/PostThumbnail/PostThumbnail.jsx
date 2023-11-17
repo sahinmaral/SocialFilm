@@ -1,4 +1,4 @@
-import {MD2Colors} from 'react-native-paper';
+import {Icon, MD2Colors} from 'react-native-paper';
 import styles from './PostThumbnail.styles';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,21 +8,37 @@ const PostThumbnail = ({post, navigation}) => {
     <TouchableOpacity
       style={styles.container}
       onPress={() => navigation.navigate('PostDetail', {postId: post.id})}>
-      <Image
-        source={{
-          uri: `https://res.cloudinary.com/sahinmaral/${post.photos[1].photoPath}`,
-        }}
-        style={styles.thumbnail}
-      />
-      <View style={styles.multipleImageIcon}>
-        {post.photos.length > 0 && (
-          <MaterialCommunityIcons
-            name="image-multiple"
-            color={MD2Colors.white}
-            size={24}
+      {post.isCensored && (
+        <View
+          style={{
+            backgroundColor: 'rgba(211, 211, 211, 0.2)',
+            height: 130,
+            opacity: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon source="eye-off" color={'#B5B4B4'} size={40} />
+        </View>
+      )}
+      {!post.isCensored && (
+        <View>
+          <Image
+            source={{
+              uri: `https://res.cloudinary.com/sahinmaral/${post.photos[0].photoPath}`,
+            }}
+            style={styles.thumbnail}
           />
-        )}
-      </View>
+          <View style={styles.multipleImageIcon}>
+            {post.photos.length > 1 && (
+              <MaterialCommunityIcons
+                name="image-multiple"
+                color={MD2Colors.white}
+                size={24}
+              />
+            )}
+          </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

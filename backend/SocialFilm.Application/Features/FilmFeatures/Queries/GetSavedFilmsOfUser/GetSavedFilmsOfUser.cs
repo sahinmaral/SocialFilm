@@ -48,8 +48,7 @@ public sealed class GetSavedFilmsOfUserCommandHandler : IRequestHandler<GetSaved
 
 
         var sortedIncludedSavedFilms = includedSavedFilms
-            .OrderBy(x => x.Film.Name)
-                .ThenByDescending(x => x.CreatedAt);
+            .OrderByDescending(x => x.CreatedAt);
 
         var pagedSortedIncludedSavedFilms = PagedList<SavedFilm>
             .ToPagedList(sortedIncludedSavedFilms, 

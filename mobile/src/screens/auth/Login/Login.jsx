@@ -6,6 +6,8 @@ import {Text, TextInput, Button} from 'react-native-paper';
 import styles from './Login.styles';
 import {setUser} from '../../../redux/reducers/authSlice';
 import {useDispatch} from 'react-redux';
+import {showMessage} from 'react-native-flash-message';
+import {fetchLogin} from '../../../services/APIService';
 
 const data = [
   {label: 'English', value: 'EN'},
@@ -61,17 +63,26 @@ function Login({navigation}) {
   };
 
   const handleSubmit = () => {
-    axios
-      .post('http://localhost:5133/api/Auth/login', {
-        userName: form.values.username,
-        password: form.values.password,
-      })
+    fetchLogin(form.values.username, form.values.password)
       .then(result => {
         dispatch(setUser(result.data));
         navigation.navigate('App');
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          const {message} = error.response.data;
+          showMessage({
+            type: 'danger',
+            message,
+          });
+        } else {
+          const message =
+            'An internal server error occurred. Please try again later.';
+          showMessage({
+            type: 'danger',
+            message,
+          });
+        }
       });
   };
 

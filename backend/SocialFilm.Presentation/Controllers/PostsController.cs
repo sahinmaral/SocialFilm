@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialFilm.Application.Features.PostFeatures.Commands.CreatePost;
 using SocialFilm.Application.Features.PostFeatures.Commands.DeletePost;
 using SocialFilm.Application.Features.PostFeatures.Queries.GetAllByUserId;
+using SocialFilm.Application.Features.PostFeatures.Queries.GetOtherUserPosts;
 using SocialFilm.Application.Features.PostFeatures.Queries.GetPostById;
 using SocialFilm.Presentation.Common;
 
@@ -27,6 +28,13 @@ public sealed class PostsController : BaseController
 
     [HttpGet("getAllByUserId")]
     public async Task<IActionResult> GetAllByUserId([FromQuery] GetAllByUserIdCommand request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("getOtherUserPosts")]
+    public async Task<IActionResult> GetAllByUserId([FromQuery] GetOtherUserPostsCommand request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request, cancellationToken);
         return Ok(result);

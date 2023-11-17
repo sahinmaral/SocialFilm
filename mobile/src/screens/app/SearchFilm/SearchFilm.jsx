@@ -33,7 +33,7 @@ function SearchFilm() {
   };
 
   const {handleBlur, handleFocus, form, handleSetValueOfFormKey} =
-    useCustomForm(['title']);
+    useCustomForm(['name']);
 
   const {user} = useSelector(state => state.auth);
 
@@ -52,14 +52,12 @@ function SearchFilm() {
   };
 
   const handleFetchSaveFilm = status => {
-    fetchSaveFilm(
-      modalState.selectedSearchedFilmId.toString(),
-      user.userId,
-      status,
-    )
+    fetchSaveFilm(modalState.selectedSearchedFilmId, user.userId, status)
       .then(response => {
         clearFetchState();
         clearModalState();
+
+        return response;
       })
       .catch(error => {
         if (error.response && error.response.status === 400) {
@@ -86,16 +84,22 @@ function SearchFilm() {
             message,
           });
         }
+      })
+      .then(response => {
+        showMessage({
+          type: 'success',
+          message: response.data.message,
+        });
       });
   };
 
   const handleFetchSearchFilms = (page = 1) => {
-    const searchedFilmTitle = form.values.title;
+    const searchedFilmTitle = form.values.name;
 
     if (searchedFilmTitle.length === 0) {
       showMessage({
         type: 'warning',
-        message: 'You have to enter title of the film you wanted to search',
+        message: 'You have to enter name of the film you wanted to search',
       });
       return;
     }
@@ -142,7 +146,11 @@ function SearchFilm() {
   };
 
   const renderModalContent = useCallback(() => {
-    const selectedSearchedFilm = fetchResult.data.results.find(
+    if (!fetchResult.data || !modalState.selectedSearchedFilmId) {
+      return null;
+    }
+
+    const selectedSearchedFilm = fetchResult.data.data.find(
       searchedFilm => searchedFilm.id === modalState.selectedSearchedFilmId,
     );
 
@@ -151,7 +159,7 @@ function SearchFilm() {
         <Image
           style={styles.modal.bottomImage}
           source={{
-            uri: `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.poster_path}`,
+            uri: `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.posterPath}`,
           }}
         />
 
@@ -171,15 +179,15 @@ function SearchFilm() {
               source={{
                 uri: `${
                   selectedSearchedFilm.backdrop_path
-                    ? `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.backdrop_path}`
-                    : `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.poster_path}`
+                    ? `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.backdropPath}`
+                    : `http://image.tmdb.org/t/p/w500/${selectedSearchedFilm.posterPath}`
                 }`,
               }}
             />
           </View>
 
           <Text variant="titleLarge" style={styles.modal.content.title}>
-            {selectedSearchedFilm.title}
+            {selectedSearchedFilm.name}
           </Text>
 
           {/* TODO: Modal , butunuyle ScrollView icerisinde kaplanir. Boylece film hakkinda onyazinin tamami okunmus olur */}
@@ -220,7 +228,7 @@ function SearchFilm() {
         </View>
       </View>
     );
-  }, [modalState.selectedSearchedFilmId]);
+  }, [fetchResult.data, modalState.selectedSearchedFilmId]);
 
   return (
     <View style={styles.container}>
@@ -229,30 +237,26 @@ function SearchFilm() {
           visible={modalState.visible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.modal.container}>
-          {modalState.selectedSearchedFilmId && renderModalContent()}
+          {renderModalContent()}
         </Modal>
       </Portal>
 
-      <Text variant="titleLarge" style={styles.header}>
-        Search Films
-      </Text>
-
       <TextInput
         label={
-          form.isFocused !== null && (form.isFocused.title || form.values.title)
+          form.isFocused !== null && (form.isFocused.name || form.values.name)
             ? ''
-            : 'Enter title of film'
+            : 'Enter name of film'
         }
         mode="flat"
         style={styles.input}
         activeUnderlineColor={MD3Colors.secondary20}
-        value={form.values && form.values.title}
-        onChangeText={text => handleSetValueOfFormKey('title', text)}
+        value={form.values && form.values.name}
+        onChangeText={text => handleSetValueOfFormKey('name', text)}
         onFocus={() => {
-          handleFocus('title');
+          handleFocus('name');
         }}
         onBlur={() => {
-          handleBlur('title');
+          handleBlur('name');
         }}
       />
 
@@ -275,12 +279,12 @@ function SearchFilm() {
               <DataTable.Title numeric>Released Date</DataTable.Title>
               <DataTable.Title numeric>Details</DataTable.Title>
             </DataTable.Header>
-            {fetchResult.data.results.map(searchedFilm => {
+            {fetchResult.data.data.map(searchedFilm => {
               return (
                 <DataTable.Row key={searchedFilm.id}>
-                  <DataTable.Cell>{searchedFilm.title}</DataTable.Cell>
+                  <DataTable.Cell>{searchedFilm.name}</DataTable.Cell>
                   <DataTable.Cell numeric>
-                    {searchedFilm.release_Date}
+                    {searchedFilm.releaseYear}
                   </DataTable.Cell>
                   <DataTable.Cell numeric>
                     <IconButton
@@ -300,10 +304,10 @@ function SearchFilm() {
             })}
 
             <DataTable.Pagination
-              page={fetchResult.data.page}
-              numberOfPages={fetchResult.data.total_Pages}
+              page={fetchResult.data.metaData.currentPage}
+              numberOfPages={fetchResult.data.metaData.totalPages}
               onPageChange={page => handleFetchSearchFilms(page)}
-              label={`${fetchResult.data.page} of ${fetchResult.data.total_Pages}`}
+              label={`${fetchResult.data.metaData.currentPage} of ${fetchResult.data.metaData.totalPages}`}
               showFastPaginationControls
             />
           </DataTable>

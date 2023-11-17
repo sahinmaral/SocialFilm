@@ -12,6 +12,8 @@ import PostDetail from './screens/app/PostDetail';
 import {View} from 'react-native';
 import TabButtonGroup from './components/TabButtonGroup';
 import CommentsDetail from './screens/app/CommentsDetail';
+import UserProfileSavedFilmList from './screens/app/UserProfileSavedFilmList/UserProfileSavedFilmList';
+import UserProfileFriends from './screens/app/UserProfileFriends/UserProfileFriends';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +30,11 @@ function AppTabNavigatorRoutes() {
     <View style={{flex: 1}}>
       <Stack.Navigator initialRouteName="Homepage">
         <Stack.Screen name="Homepage" component={Homepage} />
-        <Stack.Screen name="SearchFilm" component={SearchFilm} />
+        <Stack.Screen
+          name="SearchFilm"
+          component={SearchFilm}
+          options={{title: 'Search Films'}}
+        />
         <Stack.Screen
           name="SavedFilmList"
           component={SavedFilmList}
@@ -44,14 +50,25 @@ function AppTabNavigatorRoutes() {
           name="CommentsDetail"
           component={CommentsDetail}
           options={{
-            title: "Comments"
+            title: 'Comments',
           }}
+        />
+        <Stack.Screen
+          name="UserProfileSavedFilmList"
+          component={UserProfileSavedFilmList}
         />
         <Stack.Screen
           name="UserProfile"
           component={UserProfile}
           options={{
             headerShown: false,
+          }}
+        />
+          <Stack.Screen
+          name="UserProfileFriends"
+          component={UserProfileFriends}
+          options={{
+            title: 'Friends',
           }}
         />
       </Stack.Navigator>

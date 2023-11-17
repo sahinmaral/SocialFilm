@@ -27,7 +27,12 @@ public sealed class UserRepository : GenericRepository<User, AppDbContext>, IUse
 
         var entry = _context.Entry(userFriendWhoIsWaitingToAcceptRequest);
         entry.State = EntityState.Modified;
+    }
 
+    public IQueryable<UserFriend> GetUserFriendsById(string id)
+    {
+        var userFriendEntity = _context.Set<UserFriend>();
+        return userFriendEntity.Where(x => x.UserId == id);
     }
 
 }

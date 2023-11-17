@@ -79,6 +79,10 @@ public sealed class SaveFilmCommandHandler : IRequestHandler<SaveFilmCommand, Me
                     savedFilm.Status = request.Status;
                     _repositoryManager.SavedFilmRepository.Update(savedFilm);
                 }
+
+                await _repositoryManager.SaveChangesAsync(cancellationToken);
+
+                return new MessageResponse($"{filmDetail.Name} filmi başarıyla izlediğiniz filmler listesine kaydedildi");
             }
             else
             {
@@ -121,11 +125,8 @@ public sealed class SaveFilmCommandHandler : IRequestHandler<SaveFilmCommand, Me
 
                 await _repositoryManager.SaveChangesAsync(cancellationToken);
 
+                return new MessageResponse($"{filmDetail.Name} filmi başarıyla izlediğiniz filmler listesine kaydedildi");
             }
-
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
-
-            return new MessageResponse("Basarili");
         }
         catch (Exception)
         {

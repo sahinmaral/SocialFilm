@@ -1,10 +1,10 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {
   TouchableOpacity,
   View,
   TextInput,
   FlatList,
-  Platform
+  Platform,
 } from 'react-native';
 import {
   ActivityIndicator,
@@ -21,7 +21,8 @@ import {
 import {useSelector} from 'react-redux';
 import {showMessage} from 'react-native-flash-message';
 import SavedFilmStatus from '../../../enums/SavedFilmStatus';
-import styles from './CreatePost.styles'
+import styles from './CreatePost.styles';
+import {useFocusEffect} from '@react-navigation/native';
 
 function CreatePost() {
   const initialStates = {
@@ -59,21 +60,33 @@ function CreatePost() {
   const handleFetchGetSavedFilmsOfUser = () => {
     fetchGetSavedFilmsOfUser(
       user.userId,
-      fetchSavedFilmResult.data ? fetchSavedFilmResult.data.metaData.currentPage + 1 : 1,
+      fetchSavedFilmResult.data
+        ? fetchSavedFilmResult.data.metaData.currentPage + 1
+        : 1,
       10,
       SavedFilmStatus.Watched,
       fetchSavedFilmResult.searchSavedFilm,
     )
       .then(res => {
-        setFetchSavedFilmResult(prevState => ({
-          ...prevState,
-          data : {
-            data: prevState.data
-                  ? [...prevState.data.data, ...res.data.data]
-                    : [...res.data.data],
-            metaData: res.data.metaData
-          }
-        }));
+        if (!form.values.selectedFilm) {
+          setFetchSavedFilmResult({
+            ...fetchSavedFilmResult,
+            data: {
+              data: [...res.data.data],
+              metaData: res.data.metaData,
+            },
+          });
+        } else {
+          setFetchSavedFilmResult(prevState => ({
+            ...prevState,
+            data: {
+              data: prevState.data
+                ? [...prevState.data.data, ...res.data.data]
+                : [...res.data.data],
+              metaData: res.data.metaData,
+            },
+          }));
+        }
       })
       .catch(() => {
         const message =
@@ -92,9 +105,11 @@ function CreatePost() {
       });
   };
 
-  useEffect(() => {
-    handleFetchGetSavedFilmsOfUser();
-  }, [fetchSavedFilmResult.searchSavedFilm]);
+  useFocusEffect(
+    useCallback(() => {
+      handleFetchGetSavedFilmsOfUser();
+    }, [fetchSavedFilmResult.searchSavedFilm]),
+  );
 
   const handleFocus = formKey => {
     Object.keys(form.isFocused).forEach(key => {
@@ -272,11 +287,20 @@ function CreatePost() {
   };
 
   const renderSavedFilmDropdownItem = ({item}) => (
-    <View
-      style={styles.filmToPost.dropdown.row.container}>
-      <Text>{item.film.name}</Text>
-    </View>
-  )
+    <TouchableOpacity
+      onPress={() =>
+        setForm({...form, values: {...form.values, selectedFilm: item.film}})
+      }>
+      <View style={styles.filmToPost.dropdown.row.container}>
+        <Text>{item.film.name}</Text>
+
+        {form.values.selectedFilm &&
+          form.values.selectedFilm.id === item.film.id && (
+            <Icon source="check" color={'green'} size={20} />
+          )}
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -306,8 +330,7 @@ function CreatePost() {
       <View style={styles.images.container}>
         <Text variant="bodyMedium">Images</Text>
 
-        <View
-          style={styles.images.imageUpload.container}>
+        <View style={styles.images.imageUpload.container}>
           <TouchableOpacity
             onPress={openImageLibrary}
             style={styles.images.imageUpload.addRow}>
@@ -334,7 +357,7 @@ function CreatePost() {
           onChangeText={text => {
             setFetchSavedFilmResult({
               ...initialStates.fetchSavedFilmResult,
-              searchSavedFilm: text
+              searchSavedFilm: text,
             });
           }}
         />
@@ -346,10 +369,12 @@ function CreatePost() {
             keyExtractor={item => item.film.id}
             onEndReachedThreshold={0.5}
             onEndReached={() => {
-              if(fetchSavedFilmResult.data.metaData.totalPages !== fetchSavedFilmResult.data.metaData.currentPage){
+              if (
+                fetchSavedFilmResult.data.metaData.totalPages !==
+                fetchSavedFilmResult.data.metaData.currentPage
+              ) {
                 handleFetchGetSavedFilmsOfUser();
               }
-
             }}
             renderItem={renderSavedFilmDropdownItem}
           />

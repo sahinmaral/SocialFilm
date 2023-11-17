@@ -28,7 +28,13 @@ const styles = StyleSheet.create({
     input: {borderWidth: 1, borderColor: MD2Colors.black},
     dropdown: {
       row: {
-        container: {borderWidth: 1, borderColor: 'lightgray', padding: 5},
+        container: {
+          borderWidth: 1,
+          borderColor: 'lightgray',
+          padding: 5,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        },
       },
     },
   },
