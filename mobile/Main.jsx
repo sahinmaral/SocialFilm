@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {PaperProvider} from 'react-native-paper';
 import App from './src/App';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-redux';
@@ -9,9 +8,7 @@ export default function Main() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <PaperProvider>
-          <App />
-        </PaperProvider>
+        <App />
       </NavigationContainer>
     </Provider>
   );

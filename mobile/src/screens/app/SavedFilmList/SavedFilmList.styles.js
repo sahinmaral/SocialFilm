@@ -1,22 +1,28 @@
 import {StyleSheet} from 'react-native';
-import {MD2Colors} from 'react-native-paper';
+import SavedFilmStatus from '../../../enums/SavedFilmStatus';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: MD2Colors.white,
-    justifyContent:"center"
+    backgroundColor: 'white',
+    justifyContent: 'center',
   },
   header: {textAlign: 'center'},
   loading: {flex: 1, justifyContent: 'center'},
   modal: {
     container: {
+      flex: 0.95,
       backgroundColor: 'white',
       margin: 10,
       borderRadius: 10,
     },
-    bottomImage: {height: 500, width: '100%', opacity: 0.5, borderRadius: 10},
+    bottomImage: {
+      height: '100%',
+      width: '100%',
+      opacity: 0.5,
+      borderRadius: 10,
+    },
     content: {
       container: {
         position: 'absolute',
@@ -28,35 +34,33 @@ const styles = StyleSheet.create({
         gap: 10,
       },
       closeButton: {
-        container: {alignItems: 'flex-end'},
+        container: {alignItems: 'flex-end', marginTop: 10, flex: 0.1},
       },
       backdropImage: {
         container: {alignItems: 'center'},
       },
-      title: {textAlign: 'center', color: MD2Colors.black, fontWeight: '700'},
-      overview: {textAlign: 'center', color: MD2Colors.black},
-      releaseDate: {textAlign: 'center', color: MD2Colors.black},
+      title: {textAlign: 'center', color: 'black', fontWeight: '700'},
+      overview: {textAlign: 'center', color: 'black'},
+      releaseDate: {textAlign: 'center', color: 'black'},
       buttons: {
         container: {
           gap: 10,
           marginTop: 20,
-          flex: 1,
+          flex: 0.2,
           flexDirection: 'row',
           alignItems: 'center',
         },
         button: {
           container: status => {
             return {
-              height: 60,
-              paddingVertical: 10,
-              paddingHorizontal: 10,
+              padding: 10,
               borderRadius: 10,
               flex: 1,
-              backgroundColor: status === 1 ? "darkgreen" : "darkred",
+              backgroundColor: status === 1 ? 'darkgreen' : 'darkred',
             };
           },
           text: {
-            color: MD2Colors.white,
+            color: 'white',
             fontWeight: 'bold',
             textAlign: 'center',
           },
@@ -65,17 +69,19 @@ const styles = StyleSheet.create({
     },
   },
   table: {
-    status: {
-      container: {alignSelf: 'center', justifyContent: 'flex-end'},
-      badge: badgeBackground => {
+    status: filmStatus => {
+      if (filmStatus === SavedFilmStatus.Watched) {
         return {
-          backgroundColor: badgeBackground,
-          fontSize: 12,
-          borderRadius: 5,
+          text: {
+            color: 'darkgreen',
+          },
         };
-      },
-      text:{
-        color: MD2Colors.white
+      } else {
+        return {
+          text: {
+            color: 'darkred',
+          },
+        };
       }
     },
   },

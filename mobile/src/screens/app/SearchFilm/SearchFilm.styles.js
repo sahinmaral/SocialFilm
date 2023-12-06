@@ -1,21 +1,26 @@
 import {StyleSheet} from 'react-native';
-import {MD2Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: MD2Colors.white,
+    backgroundColor: 'white',
     flex: 1,
     justifyContent: 'center',
   },
   header: {textAlign: 'center'},
   modal: {
     container: {
-      backgroundColor: MD2Colors.white,
+      flex: 0.95,
+      backgroundColor: 'white',
       margin: 10,
       borderRadius: 10,
     },
-    bottomImage: {height: 500, width: '100%', opacity: 0.5, borderRadius: 10},
+    bottomImage: {
+      height: '100%',
+      width: '100%',
+      opacity: 0.5,
+      borderRadius: 10,
+    },
     content: {
       container: {
         position: 'absolute',
@@ -27,19 +32,19 @@ const styles = StyleSheet.create({
         gap: 10,
       },
       closeButton: {
-        container: {alignItems: 'flex-end'},
+        container: {alignItems: 'flex-end', marginTop: 10, flex: 0.1},
       },
       backdropImage: {
         container: {alignItems: 'center'},
       },
-      title: {textAlign: 'center', color: MD2Colors.black, fontWeight: '700'},
-      overview: {textAlign: 'center', color: MD2Colors.black},
-      releaseDate: {textAlign: 'center', color: MD2Colors.black},
+      title: {textAlign: 'center', color: 'black', fontWeight: '700'},
+      overview: {textAlign: 'center', color: 'black'},
+      releaseDate: {textAlign: 'center', color: 'black'},
       buttons: {
         container: {
           gap: 10,
           marginTop: 20,
-          flex: 1,
+          flex: 0.2,
           flexDirection: 'row',
           alignItems: 'center',
         },
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
             };
           },
           text: {
-            color: MD2Colors.white,
+            color: 'white',
             fontWeight: 'bold',
             textAlign: 'center',
           },
@@ -64,10 +69,11 @@ const styles = StyleSheet.create({
     },
   },
   input: {
-    backgroundColor: 'white',
-    paddingHorizontal: 0,
-    height: 25,
-    marginVertical: 20,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    fontSize: 15,
+    marginVertical: 5,
+    paddingVertical: 5,
   },
   table: {
     title: {textAlign: 'center', marginTop: 20},

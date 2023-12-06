@@ -2,17 +2,12 @@ import {useCallback, useState} from 'react';
 import {
   TouchableOpacity,
   View,
+  Text,
   TextInput,
   FlatList,
   Platform,
-} from 'react-native';
-import {
-  ActivityIndicator,
   Button,
-  Icon,
-  MD2Colors,
-  Text,
-} from 'react-native-paper';
+} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {
   fetchCreatePost,
@@ -22,7 +17,9 @@ import {useSelector} from 'react-redux';
 import {showMessage} from 'react-native-flash-message';
 import SavedFilmStatus from '../../../enums/SavedFilmStatus';
 import styles from './CreatePost.styles';
+import {default as FeatherIcon} from 'react-native-vector-icons/Feather';
 import {useFocusEffect} from '@react-navigation/native';
+import {ActivityIndicator} from 'react-native';
 
 function CreatePost() {
   const initialStates = {
@@ -209,14 +206,14 @@ function CreatePost() {
           onPress={() => removeSelectedImage(selectedImage)}
           style={{
             borderWidth: 1,
-            borderColor: MD2Colors.black,
+            borderColor: 'black',
             padding: 5,
             justifyContent: 'center',
             alignSelf: 'center',
             alignItems: 'center',
             flex: 1 / 10,
           }}>
-          <Icon source="minus" color={MD2Colors.black} size={20} />
+          <FeatherIcon name="minus" color={'black'} size={20} />
         </TouchableOpacity>
       </View>
     );
@@ -296,7 +293,7 @@ function CreatePost() {
 
         {form.values.selectedFilm &&
           form.values.selectedFilm.id === item.film.id && (
-            <Icon source="check" color={'green'} size={20} />
+            <FeatherIcon name="check" color={'green'} size={20} />
           )}
       </View>
     </TouchableOpacity>
@@ -305,15 +302,14 @@ function CreatePost() {
   return (
     <View style={styles.container}>
       <View style={styles.content.container}>
-        <Text variant="bodyMedium">Content</Text>
+        <Text>Content</Text>
         <TextInput
           multiline={true}
-          label={
+          placeholder={
             form.isFocused.content || form.values.content
               ? ''
               : 'Enter content of post'
           }
-          activeUnderlineColor={'#ADADAD'}
           onChangeText={text =>
             setForm({...form, values: {...form.values, content: text}})
           }
@@ -334,7 +330,7 @@ function CreatePost() {
           <TouchableOpacity
             onPress={openImageLibrary}
             style={styles.images.imageUpload.addRow}>
-            <Icon source="plus" color={MD2Colors.black} size={20} />
+            <FeatherIcon name="plus" color={'black'} size={20} />
           </TouchableOpacity>
           <Text variant="bodyMedium">
             Post photo count ({form.values.selectedImages.length})
@@ -382,12 +378,20 @@ function CreatePost() {
       </View>
 
       <View style={styles.submitButton.container}>
-        <Button
-          mode="contained"
-          onPress={handleSubmit}
-          loading={postResult.loading}>
-          Create Post
-        </Button>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 10,
+            padding:10,
+            borderRadius:5,
+            backgroundColor: 'lightblue',
+          }}
+          disabled={postResult.loading}
+          onPress={handleSubmit}>
+          <Text style={{fontWeight: '700', color: 'black'}}>Create Post</Text>
+          {postResult.loading && <ActivityIndicator />}
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -1,8 +1,7 @@
-import axios from 'axios';
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import {useState} from 'react';
+import {Text, View, TextInput, TouchableOpacity} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {Text, TextInput, Button} from 'react-native-paper';
+import baseStyles from '../../../styles/baseStyles';
 import styles from './Register.styles';
 
 const data = [
@@ -63,11 +62,11 @@ function Register({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{flex: 0.6}}>
-        <View style={styles.language.container}>
+    <View style={baseStyles.auth.container}>
+      <View style={baseStyles.auth.header.container}>
+        <View style={baseStyles.auth.header.language.container}>
           <Dropdown
-            style={[styles.language.dropdown]}
+            style={baseStyles.auth.header.language.dropdown}
             data={data}
             value={dropdownValue}
             labelField="label"
@@ -76,31 +75,25 @@ function Register({navigation}) {
             onChange={item => {
               setDropdownValue(item.value);
             }}
-            placeholderStyle={styles.language.placeholderStyle}
+            placeholderStyle={baseStyles.auth.header.language.placeholderStyle}
           />
         </View>
 
-        <View style={styles.logo.container}>
-          <Text variant="headlineLarge" style={styles.logo.text}>
-            SocialFilm
-          </Text>
+        <View style={baseStyles.auth.header.logo.container}>
+          <Text style={baseStyles.auth.header.logo.text}>SocialFilm</Text>
         </View>
       </View>
 
-      <View style={styles.form.container}>
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Email
-          </Text>
+      <View style={[baseStyles.auth.form.container, styles.form.container]}>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Email</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.email || form.values.email
                 ? ''
                 : 'Enter your email'
             }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
+            style={baseStyles.auth.form.input}
             value={form.values.email}
             onChangeText={text =>
               setForm({...form, values: {...form.values, email: text}})
@@ -114,19 +107,15 @@ function Register({navigation}) {
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Username
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Username</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.username || form.values.username
                 ? ''
                 : 'Enter your username'
             }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
+            style={baseStyles.auth.form.input}
             value={form.values.username}
             onChangeText={text =>
               setForm({...form, values: {...form.values, username: text}})
@@ -140,29 +129,17 @@ function Register({navigation}) {
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Password
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Password</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.password || form.values.username
                 ? ''
                 : 'Enter your password'
             }
-            mode="flat"
-            style={styles.form.input}
+            style={baseStyles.auth.form.input}
             value={form.values.password}
-            activeUnderlineColor={'#ADADAD'}
-            secureTextEntry={form.isPasswordShown}
-            right={
-              <TextInput.Icon
-                icon="eye"
-                onPress={() =>
-                  setForm({...form, isPasswordShown: !form.isPasswordShown})
-                }
-              />
-            }
+            keyboardType="visible-password"
             onChangeText={text =>
               setForm({...form, values: {...form.values, password: text}})
             }
@@ -175,18 +152,18 @@ function Register({navigation}) {
           />
         </View>
 
-        <Button
-          mode="contained"
-          style={styles.form.submitButton}
+        <TouchableOpacity
+          style={baseStyles.auth.form.submitButton.container}
           onPress={handleSubmit}>
-          Continue Register
-        </Button>
+          <Text style={baseStyles.auth.form.submitButton.text}>
+            Continue Register
+          </Text>
+        </TouchableOpacity>
 
-        <View style={styles.form.signUp.container}>
-          <Text variant="bodyMedium">Do you have an account? </Text>
+        <View style={baseStyles.auth.form.signUp.container}>
+          <Text>Do you have an account? </Text>
           <Text
-            variant="bodyMedium"
-            style={styles.form.signUp.link}
+            style={baseStyles.auth.form.signUp.link}
             onPress={() => navigation.navigate('Login')}>
             Log in
           </Text>

@@ -1,18 +1,15 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {useCallback, useState, useEffect} from 'react';
-import {Image, View, TouchableOpacity} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
+import {useCallback, useState, useEffect, useMemo} from 'react';
 import {
-  Text,
-  DataTable,
-  IconButton,
-  Badge,
-  Portal,
-  Modal,
-  Avatar,
-  MD2Colors,
+  Image,
+  View,
+  TouchableOpacity,
+  FlatList,
   ActivityIndicator,
-} from 'react-native-paper';
+  Modal,
+  Text,
+} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
 import SavedFilmStatus from '../../../enums/SavedFilmStatus';
 import styles from './SavedFilmList.styles';
@@ -20,6 +17,7 @@ import {
   fetchGetSavedFilmsOfUser,
   fetchSaveFilm,
 } from '../../../services/APIService';
+import {default as FeatherIcon} from 'react-native-vector-icons/Feather';
 
 function SavedFilmList({route}) {
   const {user} = useSelector(state => state.auth);
@@ -42,6 +40,10 @@ function SavedFilmList({route}) {
   const [fetchResult, setFetchResult] = useState(initialStates.fetchResult);
   const [modalState, setModalState] = useState(initialStates.modalState);
 
+  const tableItemsData = useMemo(() => {
+    return fetchResult.data?.data;
+  }, [fetchResult.data]);
+
   const toggleModal = () => {
     setModalState({...modalState, visible: !modalState.visible});
   };
@@ -63,61 +65,62 @@ function SavedFilmList({route}) {
         />
 
         <View style={styles.modal.content.container}>
-          <View style={styles.modal.content.closeButton.container}>
-            <IconButton
-              icon="close"
-              iconColor={MD2Colors.black}
-              size={20}
-              onPress={toggleModal}
-            />
-          </View>
+          <View style={{flex: 1}}>
+            <View style={styles.modal.content.closeButton.container}>
+              <TouchableOpacity onPress={toggleModal}>
+                <FeatherIcon name="x" color={'black'} size={24} />
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.modal.content.backdropImage}>
-            <Avatar.Image
-              size={100}
-              source={{
-                uri: `http://image.tmdb.org/t/p/w500/${selectedSavedFilm.film.backdropPath}`,
-              }}
-            />
-          </View>
+            <View style={{flex: 0.7, gap: 15}}>
+              <View style={styles.modal.content.backdropImage.container}>
+                <Image
+                  style={{
+                    height: 100,
+                    width: '100%',
+                    aspectRatio: 1.5,
+                    resizeMode: 'contain',
+                    borderRadius: 25,
+                  }}
+                  source={{
+                    uri: `${
+                      selectedSavedFilm.film.backdrop_path
+                        ? `http://image.tmdb.org/t/p/w500/${selectedSavedFilm.film.backdropPath}`
+                        : `http://image.tmdb.org/t/p/w500/${selectedSavedFilm.film.posterPath}`
+                    }`,
+                  }}
+                />
+              </View>
 
-          <Text variant="titleLarge" style={styles.modal.content.title}>
-            {selectedSavedFilm.film.name}
-          </Text>
-
-          <Text variant="bodyMedium" style={styles.modal.content.overview}>
-            {selectedSavedFilm.film.overview.length > 300
-              ? selectedSavedFilm.film.overview.slice(0, 300).concat('...')
-              : selectedSavedFilm.film.overview}
-          </Text>
-
-          <Text variant="bodyMedium" style={styles.modal.content.releaseDate}>
-            Released at {selectedSavedFilm.film.releaseYear}
-          </Text>
-
-          <View style={styles.modal.content.buttons.container}>
-            <TouchableOpacity
-              style={styles.modal.content.buttons.button.container(
-                SavedFilmStatus.Watched,
-              )}
-              onPress={() => handleFetchSaveFilm(SavedFilmStatus.Watched)}>
-              <Text
-                variant="bodyMedium"
-                style={styles.modal.content.buttons.button.text}>
-                Set this film as watched
+              <Text style={styles.modal.content.title}>
+                {selectedSavedFilm.film.name}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modal.content.buttons.button.container(
-                SavedFilmStatus.NotWatched,
-              )}
-              onPress={() => handleFetchSaveFilm(SavedFilmStatus.NotWatched)}>
-              <Text
-                variant="bodyMedium"
-                style={styles.modal.content.buttons.button.text}>
-                Set this film as not watched
+
+              {/* TODO: Modal , butunuyle ScrollView icerisinde kaplanir. Boylece film hakkinda onyazinin tamami okunmus olur */}
+              <Text style={styles.modal.content.overview}>
+                {selectedSavedFilm.film.overview.length > 300
+                  ? selectedSavedFilm.film.overview.slice(0, 300).concat('...')
+                  : selectedSavedFilm.film.overview}
               </Text>
-            </TouchableOpacity>
+
+              <Text style={styles.modal.content.releaseDate}>
+                Released at {selectedSavedFilm.film.releaseYear}
+              </Text>
+            </View>
+
+            <View style={styles.modal.content.buttons.container}>
+              {selectedSavedFilm.status !== SavedFilmStatus.Watched && (
+                <TouchableOpacity
+                  style={styles.modal.content.buttons.button.container(
+                    SavedFilmStatus.Watched,
+                  )}
+                  onPress={() => handleFetchSaveFilm(SavedFilmStatus.Watched)}>
+                  <Text style={styles.modal.content.buttons.button.text}>
+                    Set this film as watched
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       </View>
@@ -194,6 +197,32 @@ function SavedFilmList({route}) {
     }, [userIdToSeeSavedFilmList]),
   );
 
+  const TableItem = ({savedFilm}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setModalState({
+            selectedSavedFilm: savedFilm,
+            visible: !modalState.visible,
+          });
+        }}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginVertical: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: 'black',
+        }}>
+        <Text>{savedFilm.film.name}</Text>
+        <Text style={styles.table.status(savedFilm.status).text}>
+          {savedFilm.status === SavedFilmStatus.Watched
+            ? 'Watched'
+            : 'Not Watched'}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   useEffect(() => {
     const userIdExists = route.params && route.params.userId;
     if (userIdExists) {
@@ -206,77 +235,33 @@ function SavedFilmList({route}) {
   if (fetchResult.loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator
-          animating={true}
-          size={40}
-          color={MD2Colors.red800}
-        />
+        <ActivityIndicator size={40} color={'darkred'} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Portal>
-        <Modal
-          visible={modalState.visible}
-          onDismiss={toggleModal}
-          contentContainerStyle={styles.modal.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalState.visible}
+        onRequestClose={toggleModal}>
+        <View style={styles.modal.container}>
           {modalState.selectedSavedFilm && renderModalContent()}
-        </Modal>
-      </Portal>
+        </View>
+      </Modal>
 
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Name</DataTable.Title>
-          <DataTable.Title numeric>Status</DataTable.Title>
-          <DataTable.Title numeric>Details</DataTable.Title>
-        </DataTable.Header>
-        {fetchResult.data.data.map(savedFilm => {
-          return (
-            <DataTable.Row key={savedFilm.id}>
-              <DataTable.Cell>
-                <Text variant="bodyMedium">{savedFilm.film.name}</Text>
-              </DataTable.Cell>
-              <DataTable.Cell style={styles.table.status.container}>
-                <Badge
-                  style={styles.table.status.badge(
-                    savedFilm.status === SavedFilmStatus.Watched
-                      ? 'green'
-                      : 'darkred',
-                  )}>
-                  <Text variant="bodyMedium" style={styles.table.status.text}>
-                    {savedFilm.status === SavedFilmStatus.Watched
-                      ? 'Watched'
-                      : 'Not Watched'}
-                  </Text>
-                </Badge>
-              </DataTable.Cell>
-              <DataTable.Cell numeric>
-                <IconButton
-                  icon="magnify"
-                  iconColor={MD2Colors.black}
-                  size={20}
-                  onPress={() => {
-                    setModalState({
-                      selectedSavedFilm: savedFilm,
-                      visible: !modalState.visible,
-                    });
-                  }}
-                />
-              </DataTable.Cell>
-            </DataTable.Row>
-          );
-        })}
-
-        <DataTable.Pagination
-          page={fetchResult.data.metaData.currentPage}
-          numberOfPages={fetchResult.data.metaData.totalPages + 1}
-          onPageChange={page => handleFetchSavedFilmsOfUser(page)}
-          label={`${fetchResult.data.metaData.currentPage} of ${fetchResult.data.metaData.totalPages}`}
-          showFastPaginationControls
-        />
-      </DataTable>
+      <FlatList
+        data={tableItemsData}
+        ListHeaderComponent={
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{fontWeight: 700, color: 'black'}}>Name</Text>
+            <Text style={{fontWeight: 700, color: 'black'}}>Status</Text>
+          </View>
+        }
+        renderItem={({item: savedFilm}) => <TableItem savedFilm={savedFilm} />}
+      />
     </View>
   );
 }

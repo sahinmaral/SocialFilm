@@ -1,7 +1,5 @@
-import {View} from 'react-native';
-import {Avatar, Text} from 'react-native-paper';
+import {View, TouchableOpacity, Text, Image} from 'react-native';
 import styles from './UserFriendListItem.styles';
-import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 function UserFriendListItem({userFriend}) {
@@ -19,15 +17,15 @@ function UserFriendListItem({userFriend}) {
         })
       }>
       <View style={styles.container}>
-        <Avatar.Image
-          size={24}
+        <Image
+          style={{height: 24, width: 24, borderRadius: 12}}
           source={{
             uri: userFriend.profilePhotoURL
               ? `https://res.cloudinary.com/sahinmaral/${userFriend.profilePhotoURL}`
               : 'https://res.cloudinary.com/sahinmaral/image/upload/v1699171684/profileImages/default.png',
           }}
         />
-        <Text variant="bodyMedium">{userFriend.userName}</Text>
+        <Text>{userFriend.userName}</Text>
       </View>
     </TouchableOpacity>
   );

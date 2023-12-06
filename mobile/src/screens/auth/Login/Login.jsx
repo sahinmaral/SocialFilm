@@ -1,13 +1,12 @@
-import axios from 'axios';
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import {useState} from 'react';
+import {View, TextInput, Text, TouchableOpacity} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {Text, TextInput, Button} from 'react-native-paper';
-import styles from './Login.styles';
 import {setUser} from '../../../redux/reducers/authSlice';
 import {useDispatch} from 'react-redux';
 import {showMessage} from 'react-native-flash-message';
 import {fetchLogin} from '../../../services/APIService';
+import baseStyles from '../../../styles/baseStyles';
+import styles from './Login.styles';
 
 const data = [
   {label: 'English', value: 'EN'},
@@ -87,11 +86,11 @@ function Login({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{flex: 0.6}}>
-        <View style={styles.language.container}>
+    <View style={baseStyles.auth.container}>
+      <View style={baseStyles.auth.header.container}>
+        <View style={baseStyles.auth.header.language.container}>
           <Dropdown
-            style={[styles.language.dropdown]}
+            style={baseStyles.auth.header.language.dropdown}
             data={data}
             value={dropdownValue}
             labelField="label"
@@ -100,32 +99,20 @@ function Login({navigation}) {
             onChange={item => {
               setDropdownValue(item.value);
             }}
-            placeholderStyle={styles.language.placeholderStyle}
+            placeholderStyle={baseStyles.auth.header.language.placeholderStyle}
           />
         </View>
 
-        <View style={styles.logo.container}>
-          <Text variant="headlineLarge" style={styles.logo.text}>
-            SocialFilm
-          </Text>
+        <View style={baseStyles.auth.header.logo.container}>
+          <Text style={baseStyles.auth.header.logo.text}>SocialFilm</Text>
         </View>
       </View>
 
-      <View style={styles.form.container}>
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Username
-          </Text>
+      <View style={[baseStyles.auth.form.container, styles.form.container]}>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Username</Text>
           <TextInput
-            label={
-              form.isFocused.username || form.values.username
-                ? ''
-                : 'Enter your username'
-            }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
-            value={form.values.username}
+            style={baseStyles.auth.form.input}
             onChangeText={text =>
               setForm({...form, values: {...form.values, username: text}})
             }
@@ -135,32 +122,26 @@ function Login({navigation}) {
             onBlur={() => {
               handleBlur('username');
             }}
+            value={form.values.username}
+            placeholder={
+              form.isFocused.username || form.values.username
+                ? ''
+                : 'Enter your username'
+            }
+            keyboardType="default"
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Password
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Password</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.password || form.values.username
                 ? ''
                 : 'Enter your password'
             }
-            mode="flat"
-            style={styles.form.input}
+            style={baseStyles.auth.form.input}
             value={form.values.password}
-            activeUnderlineColor={'#ADADAD'}
-            secureTextEntry={form.isPasswordShown}
-            right={
-              <TextInput.Icon
-                icon="eye"
-                onPress={() =>
-                  setForm({...form, isPasswordShown: !form.isPasswordShown})
-                }
-              />
-            }
             onChangeText={text =>
               setForm({...form, values: {...form.values, password: text}})
             }
@@ -170,24 +151,23 @@ function Login({navigation}) {
             onBlur={() => {
               handleBlur('password');
             }}
+            keyboardType="visible-password"
           />
-          <Text variant="bodyMedium" style={styles.form.forgotPassword}>
+          <Text style={baseStyles.auth.form.forgotPassword}>
             Forgot password ?
           </Text>
         </View>
 
-        <Button
-          mode="contained"
-          style={styles.form.submitButton}
+        <TouchableOpacity
+          style={baseStyles.auth.form.submitButton.container}
           onPress={handleSubmit}>
-          Log in
-        </Button>
+          <Text style={baseStyles.auth.form.submitButton.text}>Log in</Text>
+        </TouchableOpacity>
 
-        <View style={styles.form.signUp.container}>
-          <Text variant="bodyMedium">Don't have an account? </Text>
+        <View style={baseStyles.auth.form.signUp.container}>
+          <Text>Don't have an account? </Text>
           <Text
-            variant="bodyMedium"
-            style={styles.form.signUp.link}
+            style={baseStyles.auth.form.signUp.link}
             onPress={() => navigation.navigate('Register')}>
             Sign up
           </Text>

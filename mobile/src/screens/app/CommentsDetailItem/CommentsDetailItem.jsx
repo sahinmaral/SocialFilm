@@ -1,8 +1,13 @@
-import {useState, useEffect} from 'react';
-import {StyleSheet, TouchableOpacity, View, FlatList} from 'react-native';
-import {Avatar, Text} from 'react-native-paper';
+import {useState, useEffect, useMemo} from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Text,
+  Image,
+} from 'react-native';
 import {fetchGetSubCommentsByParentCommentId} from '../../../services/APIService';
-import {useMemo} from 'react';
 
 function CommentsDetailItem({comment, parentCommentId}) {
   const [showSubComments, setShowSubComments] = useState(false);
@@ -67,10 +72,15 @@ function CommentsDetailItem({comment, parentCommentId}) {
     if (!showSubComments) {
       return subComments.metaData.totalRecords;
     } else {
-      if(subComments.metaData.currentPage === subComments.metaData.totalPages){
-        return 0
+      if (
+        subComments.metaData.currentPage === subComments.metaData.totalPages
+      ) {
+        return 0;
       }
-      return subComments.metaData.totalRecords - (subComments.metaData.pageSize * subComments.metaData.currentPage);
+      return (
+        subComments.metaData.totalRecords -
+        subComments.metaData.pageSize * subComments.metaData.currentPage
+      );
     }
   }, [subComments, showSubComments]);
 
@@ -81,8 +91,8 @@ function CommentsDetailItem({comment, parentCommentId}) {
   return (
     <View style={styles.container}>
       <View>
-        <Avatar.Image
-          size={36}
+        <Image
+          style={{height: 36, width: 36, borderRadius: 16}}
           source={{
             uri: comment.user.profilePhotoURL
               ? `https://res.cloudinary.com/sahinmaral/${comment.user.profilePhotoURL}`
@@ -91,10 +101,8 @@ function CommentsDetailItem({comment, parentCommentId}) {
         />
       </View>
       <View style={{flex: 1}}>
-        <Text variant="bodyMedium" style={styles.username.text}>
-          {comment.user.userName}
-        </Text>
-        <Text variant="bodyMedium">{comment.message}</Text>
+        <Text style={styles.username.text}>{comment.user.userName}</Text>
+        <Text>{comment.message}</Text>
         {subComments &&
           subComments.metaData.totalRecords !== 0 &&
           showSubComments && (
@@ -104,16 +112,17 @@ function CommentsDetailItem({comment, parentCommentId}) {
               keyExtractor={item => item.id}
             />
           )}
-        {subComments && subComments.metaData.totalRecords !== 0 && otherCommentCount !== 0 && (
-          <TouchableOpacity
-            onPress={() => handleFetchMoreSubComments(subComments)}>
-            <Text
-              variant="bodyMedium"
-              style={styles.mainCommentShowComments.text}>
-              Show other comments ({otherCommentCount})
-            </Text>
-          </TouchableOpacity>
-        )}
+        {subComments &&
+          subComments.metaData.totalRecords !== 0 &&
+          otherCommentCount !== 0 && (
+            <TouchableOpacity
+              onPress={() => handleFetchMoreSubComments(subComments)}>
+              <Text
+                style={styles.mainCommentShowComments.text}>
+                Show other comments ({otherCommentCount})
+              </Text>
+            </TouchableOpacity>
+          )}
       </View>
     </View>
   );

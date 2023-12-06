@@ -1,17 +1,8 @@
-import {
-  ActivityIndicator,
-  Avatar,
-  MD2Colors,
-  MD3Colors,
-  Text,
-  TextInput,
-} from 'react-native-paper';
 import {fetchGetUserFriendsById} from '../../../services/APIService';
-import {useState} from 'react';
-import {useCallback} from 'react';
+import {useState,useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import useCustomForm from '../../../hooks/useCustomForm';
-import {View, FlatList} from 'react-native';
+import {View, FlatList,ActivityIndicator,TextInput } from 'react-native';
 import {useSelector} from 'react-redux';
 import UserFriendListItem from '../../../components/UserFriendListItem';
 
@@ -63,9 +54,8 @@ function UserProfileFriends({route, navigation}) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator
-          animating={true}
           size={40}
-          color={MD2Colors.red800}
+          color={"darkred"}
         />
       </View>
     );
@@ -74,12 +64,11 @@ function UserProfileFriends({route, navigation}) {
   return (
     <View style={{padding: 10}}>
       <TextInput
-        label={
+        placeholder={
           form.isFocused !== null && (form.isFocused.title || form.values.title)
             ? ''
             : "Search user's friend by username"
         }
-        mode="flat"
         style={{
           backgroundColor: 'white',
           paddingVertical: 5,
@@ -87,7 +76,6 @@ function UserProfileFriends({route, navigation}) {
           height: 25,
           marginVertical: 20,
         }}
-        activeUnderlineColor={MD3Colors.secondary20}
         value={form.values && form.values.title}
         onChangeText={text => handleSetValueOfFormKey('title', text)}
         onFocus={() => {

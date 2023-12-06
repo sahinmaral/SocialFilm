@@ -1,7 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import {
+  FlatList,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import {ActivityIndicator, Avatar, MD2Colors, Text} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {
   fetchGetOtherUserPosts,
@@ -9,10 +15,8 @@ import {
   fetchGetUserProfileStatistics,
   fetchPostsByUserId,
 } from '../../../services/APIService';
-
 import PostThumbnail from '../../../components/PostThumbnail';
 import styles from './UserProfile.styles';
-import {TouchableOpacity} from 'react-native';
 
 function UserProfile({navigation, route}) {
   const initialStates = {
@@ -100,11 +104,7 @@ function UserProfile({navigation, route}) {
   if (fetchResult.loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator
-          animating={true}
-          size={40}
-          color={MD2Colors.red800}
-        />
+        <ActivityIndicator size={40} color={'darkred'} />
       </View>
     );
   }
@@ -118,8 +118,8 @@ function UserProfile({navigation, route}) {
           </Text>
         </View>
         <View style={styles.statistics.container}>
-          <Avatar.Image
-            size={80}
+          <Image
+            style={{height: 80, width: 80, borderRadius: 40}}
             source={{
               uri: fetchResult.data.userInformations.profilePhotoURL
                 ? `https://res.cloudinary.com/sahinmaral/${fetchResult.data.userInformations.profilePhotoURL}`
@@ -128,20 +128,20 @@ function UserProfile({navigation, route}) {
           />
           <View style={styles.statistics.description.container}>
             <View style={styles.statistics.row.container}>
-              <Text variant="bodyMedium" style={styles.statistics.row.values}>
+              <Text style={styles.statistics.row.values}>
                 {fetchResult.data.userProfileStatistics.postCount}
               </Text>
-              <Text variant="bodyMedium">Posts</Text>
+              <Text>Posts</Text>
             </View>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('SavedFilmList', {userId: user.userId})
               }>
               <View style={styles.statistics.row.container}>
-                <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                <Text style={styles.statistics.row.values}>
                   {fetchResult.data.userProfileStatistics.watchedFilmCount}
                 </Text>
-                <Text variant="bodyMedium">Watched Films</Text>
+                <Text>Watched Films</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -149,10 +149,10 @@ function UserProfile({navigation, route}) {
                 navigation.navigate('UserProfileFriends', {userId: user.userId})
               }>
               <View style={styles.statistics.row.container}>
-                <Text variant="bodyMedium" style={styles.statistics.row.values}>
+                <Text style={styles.statistics.row.values}>
                   {fetchResult.data.userProfileStatistics.friendCount}
                 </Text>
-                <Text variant="bodyMedium">Friends</Text>
+                <Text>Friends</Text>
               </View>
             </TouchableOpacity>
           </View>

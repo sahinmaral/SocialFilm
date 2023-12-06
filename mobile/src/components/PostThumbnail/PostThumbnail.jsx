@@ -1,4 +1,3 @@
-import {Icon, MD2Colors} from 'react-native-paper';
 import styles from './PostThumbnail.styles';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {default as MaterialCommunityIcons} from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -6,6 +5,7 @@ import {default as MaterialCommunityIcons} from 'react-native-vector-icons/Mater
 const PostThumbnail = ({post, navigation}) => {
   return (
     <TouchableOpacity
+      disabled={post.isCensored}
       style={styles.container}
       onPress={() => navigation.navigate('PostDetail', {postId: post.id})}>
       {post.isCensored && (
@@ -17,7 +17,7 @@ const PostThumbnail = ({post, navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Icon source="eye-off" color={'#B5B4B4'} size={40} />
+          <MaterialCommunityIcons name="eye-off" color={'#B5B4B4'} size={40} />
         </View>
       )}
       {!post.isCensored && (
@@ -32,7 +32,7 @@ const PostThumbnail = ({post, navigation}) => {
             {post.photos.length > 1 && (
               <MaterialCommunityIcons
                 name="image-multiple"
-                color={MD2Colors.white}
+                color={'white'}
                 size={24}
               />
             )}

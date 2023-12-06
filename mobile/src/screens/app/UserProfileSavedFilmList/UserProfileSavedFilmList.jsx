@@ -1,8 +1,7 @@
-import {MD3Colors, TextInput} from 'react-native-paper';
 import {fetchGetSavedFilmsOfUser} from '../../../services/APIService';
-import {useState} from 'react';
-import {useCallback} from 'react';
+import {useState,useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
+import { TextInput,View,FlatList } from 'react-native';
 
 function UserProfileSavedFilmList({route}) {
   const {userId} = route.params;
@@ -49,13 +48,11 @@ function UserProfileSavedFilmList({route}) {
   return (
     <View>
       <TextInput
-        label={
+        placeholder={
           form.isFocused !== null && (form.isFocused.title || form.values.title)
             ? ''
             : "Search user's watched films"
         }
-        mode="flat"
-        activeUnderlineColor={MD3Colors.secondary20}
         value={form.values && form.values.title}
         onChangeText={text => handleSetValueOfFormKey('title', text)}
         onFocus={() => {

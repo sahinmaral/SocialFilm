@@ -1,15 +1,12 @@
 import axios from 'axios';
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import {useState} from 'react';
+import {View, Text, TextInput} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {
-  Text,
-  TextInput,
-  Button,
-  ProgressBar,
-} from 'react-native-paper';
-import styles from './ContinueRegister.styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import baseStyles from '../../../styles/baseStyles';
+import * as Progress from 'react-native-progress';
+import styles from './ContinueRegister.styles';
+import {TouchableOpacity} from 'react-native';
 
 const data = [
   {label: 'English', value: 'EN'},
@@ -87,11 +84,11 @@ function ContinueRegister({navigation, route}) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{flex: 0.6}}>
-        <View style={styles.language.container}>
+    <View style={baseStyles.auth.container}>
+      <View style={baseStyles.auth.header.container}>
+        <View style={baseStyles.auth.header.language.container}>
           <Dropdown
-            style={[styles.language.dropdown]}
+            style={baseStyles.auth.header.language.dropdown}
             data={data}
             value={dropdownValue}
             labelField="label"
@@ -100,31 +97,25 @@ function ContinueRegister({navigation, route}) {
             onChange={item => {
               setDropdownValue(item.value);
             }}
-            placeholderStyle={styles.language.placeholderStyle}
+            placeholderStyle={baseStyles.auth.header.language.placeholderStyle}
           />
         </View>
 
-        <View style={styles.logo.container}>
-          <Text variant="headlineLarge" style={styles.logo.text}>
-            SocialFilm
-          </Text>
+        <View style={baseStyles.auth.header.logo.container}>
+          <Text style={baseStyles.auth.header.logo.text}>SocialFilm</Text>
         </View>
       </View>
 
-      <View style={styles.form.container}>
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Name
-          </Text>
+      <View style={[baseStyles.auth.form.container, styles.form.container]}>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Name</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.firstName || form.values.firstName
                 ? ''
                 : 'Enter your name'
             }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
+            style={baseStyles.auth.form.input}
             value={form.values.firstName}
             onChangeText={text =>
               setForm({...form, values: {...form.values, firstName: text}})
@@ -138,19 +129,15 @@ function ContinueRegister({navigation, route}) {
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Middle Name
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Middle Name</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.middleName || form.values.middleName
                 ? ''
                 : 'Enter your middle name (optional)'
             }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
+            style={baseStyles.auth.form.input}
             value={form.values.middleName}
             onChangeText={text =>
               setForm({...form, values: {...form.values, middleName: text}})
@@ -164,19 +151,15 @@ function ContinueRegister({navigation, route}) {
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Surname
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Surname</Text>
           <TextInput
-            label={
+            placeholder={
               form.isFocused.lastName || form.values.lastName
                 ? ''
                 : 'Enter your surname'
             }
-            mode="flat"
-            style={styles.form.input}
-            activeUnderlineColor={'#ADADAD'}
+            style={baseStyles.auth.form.input}
             value={form.values.lastName}
             onChangeText={text =>
               setForm({...form, values: {...form.values, lastName: text}})
@@ -190,10 +173,8 @@ function ContinueRegister({navigation, route}) {
           />
         </View>
 
-        <View style={styles.form.group}>
-          <Text variant="titleMedium" style={styles.form.label}>
-            Birth Date
-          </Text>
+        <View style={baseStyles.auth.form.group}>
+          <Text style={baseStyles.auth.form.label}>Birth Date</Text>
           {form.isFocused.birthDate && (
             <DateTimePicker
               value={form.values.birthDate}
@@ -215,11 +196,10 @@ function ContinueRegister({navigation, route}) {
             />
           )}
 
-          <View style={styles.form.birthDate}>
+          <View style={styles.form.birthDate.container}>
             <Text>{form.values.birthDate.toLocaleDateString()}</Text>
-            <Button
-              mode="text"
-              textColor="gray"
+            <TouchableOpacity
+              style={styles.form.birthDate.button}
               onPress={() =>
                 setForm({
                   ...form,
@@ -229,30 +209,35 @@ function ContinueRegister({navigation, route}) {
                   },
                 })
               }>
-              Toggle select birth date
-            </Button>
+              <Text>Toggle select birth date</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <Button
-          mode="contained"
-          style={styles.form.submitButton}
+        <TouchableOpacity
+          style={baseStyles.auth.form.submitButton.container}
           onPress={handleSubmit}>
-          Complete Register
-        </Button>
+          <Text style={baseStyles.auth.form.submitButton.text}>
+            Complete Register
+          </Text>
+        </TouchableOpacity>
 
-        <View style={styles.form.signUp.container}>
-          <Text variant="bodyMedium">Do you want to go back? </Text>
+        <View style={baseStyles.auth.form.signUp.container}>
+          <Text>Do you want to go back? </Text>
           <Text
-            variant="bodyMedium"
-            style={styles.form.signUp.link}
+            style={baseStyles.auth.form.signUp.link}
             onPress={() => navigation.navigate('Register')}>
             Register
           </Text>
         </View>
       </View>
 
-      <ProgressBar progress={0.5} color={'#267FF3'} />
+      <Progress.Bar
+        progress={0.5}
+        color={'#267FF3'}
+        unfilledColor={'#267FF3'}
+        width={200}
+      />
     </View>
   );
 }

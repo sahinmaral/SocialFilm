@@ -2,14 +2,14 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    main:{padding: 10},
-    content:{
-      gap:10,
-      flexGrow: 1
-    }
+    main: {padding: 10},
+    content: {
+      gap: 10,
+      flexGrow: 1,
+    },
   },
   user: {
-    container: {flexDirection: 'row', alignContent: 'center', gap: 10},
+    container: {flexDirection: 'row', alignItems: 'center', gap: 10},
     username: {fontWeight: 'bold'},
   },
   thumbnail: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
       },
       button: {
-        borderWidth:1,
+        borderWidth: 1,
         width: 10,
         height: 10,
         borderRadius: 5,
@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     },
   },
   aboutFilm: {
-    container:{flexDirection: 'row'},
-    name: {fontWeight: 'bold'}
-  }
+    container: {flexDirection: 'row'},
+    name: {fontWeight: 'bold'},
+  },
 });
 
 export default styles;

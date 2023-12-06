@@ -1,5 +1,4 @@
 import {StyleSheet} from 'react-native';
-import {MD2Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   container: {padding: 10, flex: 1, gap: 10},
@@ -17,7 +16,7 @@ const styles = StyleSheet.create({
       },
       addRow: {
         borderWidth: 1,
-        borderColor: MD2Colors.black,
+        borderColor: "black",
         padding: 5,
         alignSelf: 'flex-start',
       },
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
   },
   filmToPost: {
     container: {flex: 4 / 10, gap: 10},
-    input: {borderWidth: 1, borderColor: MD2Colors.black},
+    input: {borderWidth: 1, borderColor: "black"},
     dropdown: {
       row: {
         container: {

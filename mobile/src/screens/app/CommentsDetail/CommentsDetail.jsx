@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
-import {FlatList, TouchableOpacity, View} from 'react-native';
+import {FlatList, TouchableOpacity, View, Text,ActivityIndicator} from 'react-native';
 import {fetchGetCommentsPostById} from '../../../services/APIService';
-import {ActivityIndicator, MD2Colors, Text} from 'react-native-paper';
 import {showMessage} from 'react-native-flash-message';
 import CommentsDetailItem from '../CommentsDetailItem/CommentsDetailItem';
 
@@ -75,9 +74,8 @@ function CommentsDetail({route}) {
     return (
       <View style={{flex: 1}}>
         <ActivityIndicator
-          animating={true}
           size={40}
-          color={MD2Colors.red800}
+          color={"darkred"}
         />
       </View>
     );
@@ -100,7 +98,7 @@ function CommentsDetail({route}) {
                     comments.main.metaData.currentPage + 1,
                   )
                 }>
-                <Text variant="bodyMedium" style={{color: 'gray'}}>
+                <Text style={{color: 'gray'}}>
                   Show comments (
                   {comments.main.metaData.totalPages === 1
                     ? comments.main.metaData.totalRecords

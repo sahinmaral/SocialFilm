@@ -4,16 +4,11 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  ScrollView,
-} from 'react-native';
-import {
-  ActivityIndicator,
-  Avatar,
   Button,
-  MD2Colors,
   Text,
-  Tooltip,
-} from 'react-native-paper';
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {fetchGetPostById} from '../../../services/APIService';
 import {showMessage} from 'react-native-flash-message';
 import {default as FeatherIcon} from 'react-native-vector-icons/Feather';
@@ -117,11 +112,7 @@ function PostDetail({navigation, route}) {
   if (fetchResult.loading) {
     return (
       <View style={{flex: 1}}>
-        <ActivityIndicator
-          animating={true}
-          size={40}
-          color={MD2Colors.red800}
-        />
+        <ActivityIndicator size={40} color={'darkred'} />
       </View>
     );
   }
@@ -131,15 +122,13 @@ function PostDetail({navigation, route}) {
       style={styles.container.main}
       contentContainerStyle={styles.container.content}>
       <View style={styles.user.container}>
-        <Avatar.Image
-          size={36}
+        <Image
+          style={{height: 40, width: 40, borderRadius: 20}}
           source={{
             uri: 'https://res.cloudinary.com/sahinmaral/image/upload/v1699161684/profileImages/default.png',
           }}
         />
-        <Text variant="bodyLarge" style={styles.user.username}>
-          sahinnmarall
-        </Text>
+        <Text style={styles.user.username}>sahinnmarall</Text>
       </View>
       <View style={styles.thumbnail.container}>
         <View
@@ -152,11 +141,7 @@ function PostDetail({navigation, route}) {
               onPress={() =>
                 setPhotoIndexOfPostStates(postStates.photos.currentIndex - 1)
               }>
-              <FeatherIcon
-                name={'chevron-left'}
-                color={MD2Colors.black}
-                size={24}
-              />
+              <FeatherIcon name={'chevron-left'} color={'black'} size={24} />
             </TouchableOpacity>
           )}
           {postStates.photos.currentIndex !==
@@ -165,11 +150,7 @@ function PostDetail({navigation, route}) {
               onPress={() =>
                 setPhotoIndexOfPostStates(postStates.photos.currentIndex + 1)
               }>
-              <FeatherIcon
-                name={'chevron-right'}
-                color={MD2Colors.black}
-                size={24}
-              />
+              <FeatherIcon name={'chevron-right'} color={'black'} size={24} />
             </TouchableOpacity>
           )}
         </View>
@@ -188,18 +169,9 @@ function PostDetail({navigation, route}) {
             <MaterialCommunityIcon
               name="heart-outline"
               size={24}
-              color={MD2Colors.black}
+              color={'black'}
             />
           </TouchableOpacity>
-          <Tooltip title="Open/close to type comment">
-            <TouchableOpacity onPress={toggleToShowTypeComment}>
-              <MaterialCommunityIcon
-                name="comment-outline"
-                size={24}
-                color={MD2Colors.black}
-              />
-            </TouchableOpacity>
-          </Tooltip>
         </View>
         <View style={styles.navigators.paginationButtonGroup.container}>
           {Array.from(Array(fetchResult.data.photos.length).keys()).map(
@@ -214,12 +186,12 @@ function PostDetail({navigation, route}) {
                       {
                         borderColor:
                           index === postStates.photos.currentIndex
-                            ? MD2Colors.blue700
-                            : MD2Colors.black,
+                            ? 'blue'
+                            : 'black',
                         backgroundColor:
                           index === postStates.photos.currentIndex
-                            ? MD2Colors.blue700
-                            : MD2Colors.white,
+                            ? 'blue'
+                            : 'white',
                       },
                     ]}
                   />
@@ -236,7 +208,7 @@ function PostDetail({navigation, route}) {
         </Text>
       </View>
       <View>
-        <Text variant="bodyMedium">{reducedContentOfPost}</Text>
+        <Text>{reducedContentOfPost}</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('CommentsDetail', {postId})}>
           <Text style={{color: 'gray'}}>
@@ -257,9 +229,7 @@ function PostDetail({navigation, route}) {
               borderColor: 'lightgray',
             }}
           />
-          <TouchableOpacity>
-            <Button mode="contained">Submit</Button>
-          </TouchableOpacity>
+          <Button title={'Submit'} />
         </View>
       )}
     </ScrollView>

@@ -1,11 +1,10 @@
 import {StyleSheet} from 'react-native';
-import {MD2Colors, MD3Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: MD2Colors.white,
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   loading: {flex: 1, justifyContent: 'center'},
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
       width: 80,
       borderRadius: 40,
       borderWidth: 1,
-      borderColor: MD3Colors.secondary90,
+      borderColor: 'lightgray',
     },
     description: {
       container: {flexDirection: 'row', gap: 10},

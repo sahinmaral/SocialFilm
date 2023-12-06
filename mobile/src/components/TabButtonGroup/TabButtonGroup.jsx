@@ -3,7 +3,6 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import {default as FeatherIcon} from 'react-native-vector-icons/Feather';
 import styles from './TabButtonGroup.styles';
-import { MD2Colors } from 'react-native-paper';
 
 function TabButtonGroup() {
   const navigation = useNavigation();
@@ -32,7 +31,7 @@ function TabButtonGroup() {
         break;
     }
 
-    return <FeatherIcon name={iconName} color={MD2Colors.black} size={24} />;
+    return <FeatherIcon name={iconName} color={"black"} size={24} />;
   };
 
   return (
